@@ -6,8 +6,11 @@ Designed to be a simple way to implement various basic pentest network functions
 Currently implemented functions:
 
 *Show external IP (uses curl)
+
 *TCP Port scanner (using netcat)
+
 *TCP Syn Flood (using hping3 otherwise reverts to nping)
+
 *Create a TCP or UDP listener (uses netcat)
 
 *More to come...
