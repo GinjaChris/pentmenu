@@ -26,14 +26,24 @@ else echo "Using netcat to create listener:"
 fi
 echo "Use ctrl c to stop"
 if [ "$PROTO" = "t" ] && [ "$PORT" -lt "1025" ]; then
-sudo netcat -k -l -v -p $PORT 
+sudo nc -k -l -v -p $PORT 
 elif  [ "$PROTO" = "t" ] && [ "$PORT" -gt "1024" ]; then
-netcat -k -l -v -p $PORT 
+nc -k -l -v -p $PORT 
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -lt "1025" ]; then
-sudo netcat -u -k -l -v -p $PORT 
+sudo nc -u -k -l -v -p $PORT 
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
-netcat -u -k -l -v -p $PORT 
+nc -u -k -l -v -p $PORT 
 fi
+}
+## define simple banner grabber
+bannergrab()
+{ echo "Attempting to grab banners using netcat..."
+	echo "Enter target"
+	read TARGET
+	echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
+	read PORT
+	echo "Starting..."
+		echo -e "HEAD / HTTP/1.0\r\n\r\n"| nc -vw 2 $TARGET $PORT
 }
 ## create menu and show welcome message
 echo ""
@@ -41,7 +51,7 @@ echo "Hello and welcome to pentmenu!"
 echo "This software is only for responsible, authorised use."
 echo "YOU are responsible for your own actions!"
 echo ""
-options=("Show IP" "TCP Port Scanner" "TCP SYN Flood" "Create Listener" "Quit")
+options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "Create Listener" "Quit")
 select opt in "${options[@]}"; do
 ## quit 
 	if [ "$opt" = "Quit" ]; then
@@ -101,20 +111,24 @@ select opt in "${options[@]}"; do
 	else sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
 	fi
 	fi
-## TCP SYN Port Scan using netcat
+## TCP SYN Port Scan using nc
 	elif [ "$opt" = "TCP Port Scanner" ]; then
 	echo "TCP Port Scanner uses netcat..."
-	echo "Enter target"
+	echo "Enter target IP"
 	read TARGET
 	echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
 	read PORT
 	echo "Starting TCP Port Scan"
-		netcat -zv $TARGET $PORT
+	nc -zv $TARGET $PORT
 	elif [ "$opt" = "Create Listener" ]; then
 	listener
+## Simple Banner Grabber
+	elif [ "$opt" = "Banner Grabber" ]; then
+	bannergrab
 ## Default if no menu option selected is to return an error
 	else
   	echo  "That's not a valid option! Hit Return to show main menu"
 	fi
 done
 exit 0
+
