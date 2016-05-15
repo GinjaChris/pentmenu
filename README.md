@@ -9,6 +9,8 @@ Currently implemented functions:
 
 *TCP Port scanner (using netcat)
 
+*Simple banner grabber (using netcat)
+
 *TCP Syn Flood (using hping3 otherwise reverts to nping)
 
 *Create a TCP or UDP listener (uses netcat)
