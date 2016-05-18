@@ -13,9 +13,16 @@ Currently implemented functions:
 
 *TCP Syn Flood (using hping3 otherwise reverts to nping)
 
+*SSL DOS (using openssl)
+
 *Create a TCP or UDP listener (uses netcat)
 
 *More to come...
 
 
-The script already implements sudo where required.  If your user does not have sudo capability, run as root.
+The script already implements sudo where required.  If your user does not have sudo capability, run as root.  Tested on Debian and Arch.
+Requires:
+curl
+netcat (GNU version for now, until I figure a way around that)
+hping3 (or nping)
+openssl
