@@ -1,4 +1,5 @@
 #!/bin/bash
+PS3="Pentmenu>"
 ## create ssldos function
 ssldos() 
 { echo "Using openssl for SSL DOS"
