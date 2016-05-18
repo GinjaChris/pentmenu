@@ -21,8 +21,13 @@ Currently implemented functions:
 
 
 The script already implements sudo where required.  If your user does not have sudo capability, run as root.  Tested on Debian and Arch.
+
 Requires:
+
 curl
-netcat (GNU version for now, until I figure a way around that)
+
+netcat
+
 hping3 (or nping)
+
 openssl
