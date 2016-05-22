@@ -168,11 +168,11 @@ bannergrab()
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read SOURCE
 		: ${SOURCE:=i}
-		echo "Enter number of packets to send per second (default is 1000):"
-	read $RATE
+		echo "Enter number of packets to send per second (default is 10000):"
+	read RATE
 		: ${RATE:=1000}
-		echo "Enter total number of packets to send (default is 10000):"
-	read $TOTAL
+		echo "Enter total number of packets to send (default is 100000):"
+	read TOTAL
 		: ${TOTAL:=10000}
 		echo "Starting TCP SYN Flood..."
 	if 	[ "$SOURCE" = "i" ]; then
@@ -203,4 +203,3 @@ bannergrab()
 	fi
 done
 exit 0
-
