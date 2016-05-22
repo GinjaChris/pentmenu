@@ -1,7 +1,7 @@
 # pentmenu
 A simple bash script inspired by pentbox.
 
-Designed to be a simple way to implement various basic pentest network functions without having to remember the options for multiple tools.
+Designed to be a simple way to implement various basic pentesting network functions using, where possible, readily available software commonly installed on most linux distributions, without having to resort to multiple specialist tools.
 
 Currently implemented functions:
 
@@ -11,7 +11,9 @@ Currently implemented functions:
 
 *Simple banner grabber (using netcat)
 
-*TCP Syn Flood (using hping3 otherwise reverts to nping)
+*TCP Syn Flood (using hping3 where available, otherwise reverts to nping)
+
+*UDP Flood (using hping3 if available, otherwise reverts to nping)
 
 *SSL DOS (using openssl)
 
@@ -20,9 +22,13 @@ Currently implemented functions:
 *More to come...
 
 
-The script already implements sudo where required.  If your user does not have sudo capability, run as root.  Tested on Debian and Arch.
+Sudo is implemented where necesssary.
 
-Requires:
+Tested on Debian and Arch.
+
+Requirements:
+
+sudo 
 
 curl
 
