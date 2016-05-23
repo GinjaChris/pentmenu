@@ -99,7 +99,7 @@ done
 fi
 }
 ## create listener function
-listener ()
+listener()
 	{ echo "Enter protocol, [t]cp (default) or [u]dp:"
 read PROTO
 	: ${PROTO:=t}
