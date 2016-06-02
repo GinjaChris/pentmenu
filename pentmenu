@@ -71,7 +71,7 @@ if [ "$PORT" -lt "1" ]; then
 	PORT=443 && echo "Invalid port number chosen!  Reverting to port 443"
 elif [ "$PORT" -gt "65535" ]; then
 	PORT=443 && echo "Invalid port number chosen!  Reverting to port 443"
-else echo "Using PORT $PORT"
+else echo "Using port $PORT"
 fi
 	echo "Use client renegotiation? [y]es or [n]o (default):"
 read NEGOTIATE
