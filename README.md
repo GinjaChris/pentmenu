@@ -1,25 +1,27 @@
-# pentmenu
+#pentmenu
+
+
 A simple bash script inspired by pentbox.
 
 Designed to be a simple way to implement various basic pentesting network functions using, where possible, readily available software commonly installed on most linux distributions, without having to resort to multiple specialist tools.
 
 Currently implemented functions:
 
-*Show external IP (uses curl)
+*Show external IP
 
-*TCP Port scanner (using netcat)
+*TCP Port scanner
 
-*Simple banner grabber (using netcat)
+*Simple banner grabber
 
-*TCP Syn Flood (using hping3 where available, otherwise reverts to nping)
+*TCP Syn Flood
 
-*UDP Flood (using hping3 if available, otherwise reverts to nping)
+*UDP Flood
 
-*SSL DOS (using openssl)
+*SSL DOS
 
-*Slowloris (using netcat)
+*Slowloris
 
-*Create a TCP or UDP listener (uses netcat)
+*Create a TCP or UDP listener
 
 *More to come...
 
@@ -39,3 +41,19 @@ netcat
 hping3 (or nping)
 
 openssl
+
+
+#How to use?
+
+
+- Download the script:
+
+$wget https://raw.githubusercontent.com/GinjaChris/pentmenu/master/pentmenu
+
+- Make it executable:
+
+$chmod +x ./pentmenu
+
+- Run it:
+
+$./pentmenu
