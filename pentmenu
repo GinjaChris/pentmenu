@@ -278,7 +278,7 @@ bannergrab()
  	elif [ "$opt" = "UDP Flood" ]; then
 		udpflood
 ## Slowloris
-	elif [ "$opt" = "Slowloris"]; then
+	elif [ "$opt" = "Slowloris" ]; then
 		slowloris
 ## Default if no menu option selected is to return an error
 	else
