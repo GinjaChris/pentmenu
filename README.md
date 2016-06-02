@@ -3,7 +3,7 @@
 
 A simple bash script inspired by pentbox.
 
-Designed to be a simple way to implement various basic pentesting network functions using, where possible, readily available software commonly installed on most linux distributions, without having to resort to multiple specialist tools.
+Designed to be a simple way to implement various basic pentesting network functions, including network attacks, using wherever possible readily available software commonly installed on most linux distributions, without having to resort to multiple specialist tools.
 
 Currently implemented functions:
 
