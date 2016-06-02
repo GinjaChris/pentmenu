@@ -17,6 +17,8 @@ Currently implemented functions:
 
 *SSL DOS (using openssl)
 
+*Slowloris (using netcat)
+
 *Create a TCP or UDP listener (uses netcat)
 
 *More to come...
