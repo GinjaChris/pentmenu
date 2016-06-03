@@ -1,5 +1,19 @@
 #!/bin/bash
 PS3="Pentmenu>"
+## create showip function
+showip()
+{		echo "External IP lookup uses curl..."
+		echo "External IP is detected as:"
+		curl http://canihazip.com/s/
+		echo ""
+		echo ""
+		echo "Interface IP's are:"
+		ip a|grep inet
+	if ! [[ $? = 0 ]]; then
+		ifconfig|grep inet
+	fi
+		echo ""
+}
 ## create slowloris function
 slowloris()
 { echo "Using netcat for Slowloris attack...."
@@ -212,10 +226,7 @@ bannergrab()
 	exit 0
 ## show external IP
 	elif [ "$opt" = "Show IP" ]; then
-		echo "External IP lookup uses curl..."
-		echo "External IP is detected as:"
-		curl http://canihazip.com/s/
-		echo ""
+		showip
 ## TCP SYN Flood DOS
  	elif [ "$opt" = "TCP SYN Flood" ]; then
 		echo "TCP SYN Flood uses hping3...checking for hping3..."
