@@ -283,7 +283,7 @@ bannergrab()
 		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
 	read PORT
 		echo "Starting TCP Port Scan"
-		nc -zv $TARGET $PORT
+		nc -zv -w 2 $TARGET $PORT
 	elif [ "$opt" = "Create Listener" ]; then
 		listener
 ## Simple Banner Grabber
