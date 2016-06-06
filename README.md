@@ -32,6 +32,8 @@ Tested on Debian and Arch.
 
 Requirements:
 
+bash
+
 sudo 
 
 curl
