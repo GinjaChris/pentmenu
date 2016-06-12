@@ -5,12 +5,12 @@ synflood()
 {		echo "TCP SYN Flood uses hping3...checking for hping3..."
 	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 ## hping3 is found, so use that for TCP SYN Flood
-	echo "Enter target"
-		read TARGET
-	echo "Enter target port"
-		read PORT
-	echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
-		read SOURCE
+		echo "Enter target"
+	read -i $TARGET -e TARGET
+		echo "Enter target port"
+	read PORT
+		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
+	read SOURCE
 	: ${SOURCE:=i}
 	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
 		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
@@ -30,7 +30,7 @@ synflood()
 		echo ""
 		echo "Trying TCP SYN Flood with nping..this will work but is not ideal"
 		echo "Enter target"
-	read TARGET
+	read -i $TARGET -e TARGET
 		echo "Enter target port"
 	read PORT
 		echo "Enter Source IP or use [i]nterface IP (default):"
@@ -54,7 +54,7 @@ synflood()
 portscan()
 {		echo "TCP Port Scanner uses netcat..."
 		echo "Enter target IP"
-	read TARGET
+	read -i $TARGET -e TARGET
 		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
 	read PORT
 		echo "Starting TCP Port Scan"
@@ -81,7 +81,7 @@ slowloris()
 { echo "Using netcat for Slowloris attack...."
 echo "Please note that this attack currently does not work against encrypted (HTTPS) sites" && sleep 1
 echo "Enter target:"
-	read TARGET
+	read -i $TARGET -e TARGET
 echo "Target is set to $TARGET"
 echo "Enter target port (defaults to 80):"
 	read PORT
@@ -96,7 +96,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	else echo "Using Port $PORT"
 	fi
 echo "Enter number of connections to open (default 200):"
-	read CONNS
+		read CONNS
 	: ${CONNS:=200}
 	if ! [[ "$CONNS" =~ ^[0-9]+$ ]]; then
 CONNS=200 && echo "Invalid integer!  Using 200 connections"
@@ -114,7 +114,7 @@ udpflood()
 if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 ## hping3 is found, so use that for UDP Flood
 	echo "Enter target"
-		read TARGET
+		read -i $TARGET -e TARGET
 	echo "Enter target port"
 		read PORT
 	echo "Enter random string (data to send)"
@@ -140,7 +140,7 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 		echo ""
 		echo "Trying UDP Flood with nping.."
 		echo "Enter target"
-	read TARGET
+	read -i $TARGET -e TARGET
 		echo "Enter target port"
 	read PORT
 		echo "Enter Source IP or use [i]nterface IP (default):"
@@ -165,9 +165,9 @@ fi
 ## create ssldos function
 ssldos() 
 { echo "Using openssl for SSL DOS"
-	echo "Enter target:"
-read TARGET
-	echo "Enter target port (defaults to 443):"
+		echo "Enter target:"
+	read -i $TARGET -e TARGET
+		echo "Enter target port (defaults to 443):"
 read PORT
 
 : ${PORT:=443}
@@ -270,7 +270,7 @@ elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
 bannergrab()
 { echo "Attempting to grab banners using netcat..."
 	echo "Enter target"
-	read TARGET
+	read -i $TARGET -e TARGET
 		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
 	read PORT
 		echo "Starting..."
