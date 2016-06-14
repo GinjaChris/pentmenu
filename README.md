@@ -82,7 +82,7 @@ A TCP SYN flood is unlikely to break a server, but is a good way to test switch/
 
 
 *UDP Flood - much like the TCP SYN Flood but instead sends UDP packets to the specified host:port. Like the TCP SYN Flood function, hping3 is used but if it is not found, it attempts to use nmap-nping instead.  All options are the same as TCP SYN Flood, except you can specify data to send in the UDP packets.
-Again, this is a good way to check switch/router throughput.
+Again, this is a good way to check switch/router throughput or to test VOIP systems.
 
 
 *SSL DOS - uses OpenSSL to attempt to DOS a target host:port.  It does this by opening many connections and causing the server to make expensive handshake calculations.  This is not a pretty or elegant piece of code, do not expect it to stop immediately upon pressing 'Ctrl c', but it can be brutally effective.  
