@@ -98,7 +98,7 @@ echo "Enter number of connections to open (default 500):"
 		read CONNS
 	: ${CONNS:=500}
 	if ! [[ "$CONNS" =~ ^[0-9]+$ ]]; then
-CONNS=200 && echo "Invalid integer!  Using 500 connections"
+CONNS=500 && echo "Invalid integer!  Using 500 connections"
 	fi
 
 echo "use SSL? [y]es or [n]o (default):"
