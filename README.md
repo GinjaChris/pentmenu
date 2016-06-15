@@ -92,7 +92,10 @@ It is very useful to run this against loadbalancers/proxies/SSL-enabled servers 
 
 
 *Slowloris - uses netcat to slowly send HTTP Headers to the target host:port with the intention of starving it of resources.  This is effective against many, although not all, HTTP servers, provided the connections can be held open for long enough.  Therefore this attack is only effective if the server does not limit the time available to send a complete HTTP request.
-Some implementations of this attack use clearly identifiable headers which is not the case here.  The number of connections to open to the target is configurable. The option to use SSL (SSL/TLS) is given, which requires stunnel.
+Some implementations of this attack use clearly identifiable headers which is not the case here.  The number of connections to open to the target is configurable. 
+The interval between sending each header line is configurable, with the default being a random value between 5 and 15 seconds. The idea is to send headers slowly, but not so slow that the servers idle timeout closes the connection.
+The option to use SSL (SSL/TLS) is given, which requires stunnel.
+
 
 Defences against this attack include (but are not limited to):
 
