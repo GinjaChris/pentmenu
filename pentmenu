@@ -120,10 +120,10 @@ if [[ "$SSL" = "y" ]]
 	then echo "Using SSL/TLS"
 LHOST=127.0.0.1
 LPORT=9991
-grep -q 9991 /etc/services
+grep -q $LPORT /etc/services
 if [[ $? = 1 ]]
 then
-echo "Adding pentmenu slowloris service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-slowloris-ssl 9991/tcp #pentmenu slowloris ssl listener" >> /etc/services &&  sudo chmod 644 /etc/services
+echo "Adding pentmenu slowloris service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
 fi
 if test -f "/bin/ss"; then 
 	LISTPORT=ss; 
@@ -135,7 +135,7 @@ then
 	echo "Creating stunnel on $LHOST:$LPORT"	
 		sudo rm -f /etc/stunnel/pentmenu.conf;
 		sudo touch /etc/stunnel/pentmenu.conf && sudo chmod 777 /etc/stunnel/pentmenu.conf
-		sudo echo "[SLOWLORIS]" >> /etc/stunnel/pentmenu.conf
+		sudo echo "[PENTMENU-CLIENT]" >> /etc/stunnel/pentmenu.conf
 		sudo echo "client=yes" >> /etc/stunnel/pentmenu.conf
 		sudo echo "accept=$LHOST:$LPORT" >> /etc/stunnel/pentmenu.conf
 		sudo echo "connect=$TARGET:$PORT" >> /etc/stunnel/pentmenu.conf
