@@ -109,3 +109,7 @@ Limiting the time available to send a complete HTTP request; this is effective s
 #Disclaimer
 
 This script is only for responsible, authorised use. You are responsible for your own actions and this script is provided without warranty or guarantee of any kind.  The author(s) accept no responsibility or liability on your behalf.
+
+
+#Also see
+Pentmenu is available as a package (https://archstrike.org/packages/pentmenu) on Arch Linux.  Big love to Archstrike (https://archstrike.org/)
