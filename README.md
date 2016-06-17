@@ -3,7 +3,7 @@
 
 A simple bash script inspired by pentbox.
 
-Designed to be a simple way to implement various basic pentesting network functions, including network attacks, using wherever possible readily available software commonly installed on most linux distributions, without having to resort to multiple specialist tools.
+Designed to be a simple way to implement various network pentesting functions, including network attacks, using wherever possible readily available software commonly installed on most linux distributions without having to resort to multiple specialist tools.
 
 Currently implemented functions:
 
@@ -95,7 +95,6 @@ It is very useful to run this against loadbalancers/proxies/SSL-enabled servers 
 Some implementations of this attack use clearly identifiable headers which is not the case here.  The number of connections to open to the target is configurable. 
 The interval between sending each header line is configurable, with the default being a random value between 5 and 15 seconds. The idea is to send headers slowly, but not so slow that the servers idle timeout closes the connection.
 The option to use SSL (SSL/TLS) is given, which requires stunnel.
-
 
 Defences against this attack include (but are not limited to):
 
