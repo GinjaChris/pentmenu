@@ -12,7 +12,7 @@ LPORT=9991
 grep -q $LPORT /etc/services
 if [[ $? = 1 ]]
 then
-echo "Adding pentmenu slowloris service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
+echo "Adding pentmenu stunnel service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
 fi
 if test -f "/bin/ss"; then 
 	LISTPORT=ss; 
