@@ -333,13 +333,32 @@ bannergrab()
 		echo -e "HEAD / HTTP/1.0\r\n\r\n"| nc -vw 2 $TARGET $PORT
 }
 
+## create a network recon function
+reconnetwork()
+{ echo "This module conducts a scan of the entire network using nmap"
+echo "Depending on the network size, the scan might take a long time to finish"
+echo "Please enter the network subnet (e.g. 192.168.1.0/24)"
+read -i $SUBNET -e SUBNET
+sudo nmap -sV -sC -A -O $SUBNET
+}
+
+## create a stealth scan function
+stealthscan()
+{ echo "This module lets you scan a host/network very stealthily"
+echo "Since stealth is important, the scan might take a very long time to finish"
+echo "Enter the host/subnet to scan"
+read -i $TARGET -e TARGET
+echo "Enter the speed of scan (0 means very slow and 5 means fast)"
+read -i $SPEED -e SPEED
+sudo nmap -sS -T $SPEED $TARGET
+}
 ## create menu and show welcome message
 	clear && echo ""
 	echo "Hello and welcome to pentmenu!"
 	echo "This software is only for responsible, authorised use."
 	echo "YOU are responsible for your own actions!"
 	echo ""
-	options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Create Listener" "Quit")
+	options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Create Listener" "Recon Network" "Stealth Scan" "Quit")
 	select opt in "${options[@]}"; do
 ## quit 
 	if [ "$opt" = "Quit" ]; then
@@ -368,6 +387,12 @@ bannergrab()
 ## Slowloris
 	elif [ "$opt" = "Slowloris" ]; then
 		slowloris
+## Recon Network
+    elif [ "$opt" = "Recon Network" ]; then
+        reconnetwork
+## Stealth Scan
+    elif [ "$opt" = "Stealth Scan" ]; then
+        stealthscan
 ## Default if no menu option selected is to return an error
 	else
   		echo  "That's not a valid option! Hit Return to show main menu"
