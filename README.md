@@ -9,9 +9,9 @@ Currently implemented functions:
 
 *Show IP
 
-*TCP Port scanner
+*Stealth Scan (TCP Port scanner)
 
-*Simple banner grabber
+*Network Recon
 
 *TCP Syn Flood
 
@@ -72,10 +72,10 @@ Alternatively, use git clone, or download the latest release from https://github
 *Show IP - uses curl to perform a lookup of your external IP. Runs ip a or ifconfig (as appropriate) to show local interface IP's.
 
 
-*TCP Port scanner - uses netcat to run a basic TCP SYN port scan.  Accepts a single port or port range for a host.
+*Stealth Scan - TCP Port scanner using nmap to scan for open ports.
 
 
-*Simple banner grabber - uses netcat to try and grab banners from services.  Currently sends a HTTP HEAD request, but this doesn't just work for HTTP servers.  For example, SSH servers will often respond with version details.
+*Network Recon - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.
 
 
 *TCP Syn Flood - sends a flood of TCP SYN packets using hping3.  If hping3 is not found, it attempts to use the nmap-nping utility instead. Hping3 is preferred since it sends packets as fast as possible.  Options are provided to use a source IP of your interface, or specify (spoof) a source IP, or spoof a random source IP for each packet. 
