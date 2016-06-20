@@ -1,5 +1,78 @@
 #!/bin/bash
 PS3="Pentmenu>"
+## MAINMENU
+mainmenu()
+{
+mainmenu=("Recon" "DOS" "Quit")
+select opt in "${mainmenu[@]}"; do
+	if [ "$opt" = "Quit" ]; then
+	echo "Quitting" && sleep 1 && clear
+	exit 0
+	elif [ "$opt" = "Recon" ]; then
+reconmenu
+	elif [ "$opt" = "DOS" ]; then
+dosmenu
+	else 
+	echo "That's not a valid option! Hit Return to show main menu"
+	fi
+done
+}
+
+
+## RECONMENU
+reconmenu()
+{
+		reconmenu=("Show IP" "Recon Network" "Stealth Scan" "Create Listener" "Go back")
+	select reconopt in "${reconmenu[@]}"; do
+## show external IP
+	if [ "$reconopt" = "Show IP" ]; then
+		showip
+## Recon Network
+    elif [ "$reconopt" = "Recon Network" ]; then
+        reconnetwork
+## Stealth Scan
+    elif [ "$reconopt" = "Stealth Scan" ]; then
+        stealthscan
+## Create an arbitrary listener
+	elif [ "$reconopt" = "Create Listener" ]; then
+		listener
+## Go back		
+	elif [ "$reconopt" = "Go back" ]; then
+		mainmenu
+## Default if no menu option selected is to return an error
+	else
+  		echo  "That's not a valid option! Hit Return to show menu"
+	fi
+	done
+}
+
+## DOSMENU
+dosmenu()
+{
+		dosmenu=("TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Go back")
+	select dosopt in "${dosmenu[@]}"; do
+## TCP SYN Flood DOS
+ 	if [ "$dosopt" = "TCP SYN Flood" ]; then
+		synflood
+## UDP Flood		
+ 	elif [ "$dosopt" = "UDP Flood" ]; then
+		udpflood
+## SSL DOS
+	elif [ "$dosopt" = "SSL DOS" ]; then
+		ssldos
+## Slowloris
+	elif [ "$dosopt" = "Slowloris" ]; then
+		slowloris
+## Go back	
+	elif [ "$dosopt" = "Go back" ]; then
+		mainmenu
+	else
+## Default if no menu option selected is to return an error
+  	echo  "That's not a valid option! Hit Return to show menu"
+	fi
+	done
+}
+
 ## create stunnel client function
 stunnel_client() 
 { echo "use SSL? [y]es or [n]o (default):"
@@ -85,16 +158,6 @@ synflood()
 	fi
 }
 
-## create portscan function
-portscan()
-{		echo "TCP Port Scanner uses netcat..."
-		echo "Enter target IP"
-	read -i $TARGET -e TARGET
-		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
-	read PORT
-		echo "Starting TCP Port Scan"
-		nc -zv -w 2 $TARGET $PORT
-}
 
 ## create showip function
 showip()
@@ -322,16 +385,6 @@ elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
 	fi
 }
 
-## define simple banner grabber function
-bannergrab()
-{ echo "Attempting to grab banners using netcat..."
-	echo "Enter target"
-	read -i $TARGET -e TARGET
-		echo "Enter target port (e.g. '80') or port range (e.g. '1-1000')"
-	read PORT
-		echo "Starting..."
-		echo -e "HEAD / HTTP/1.0\r\n\r\n"| nc -vw 2 $TARGET $PORT
-}
 
 ## create a network recon function
 reconnetwork()
@@ -358,44 +411,5 @@ sudo nmap -sS -T $SPEED $TARGET
 	echo "This software is only for responsible, authorised use."
 	echo "YOU are responsible for your own actions!"
 	echo ""
-	options=("Show IP" "TCP Port Scanner" "Banner Grabber" "TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Create Listener" "Recon Network" "Stealth Scan" "Quit")
-	select opt in "${options[@]}"; do
-## quit 
-	if [ "$opt" = "Quit" ]; then
-		echo "Quitting" && sleep 1 && clear
-	exit 0
-## show external IP
-	elif [ "$opt" = "Show IP" ]; then
-		showip
-## TCP SYN Flood DOS
- 	elif [ "$opt" = "TCP SYN Flood" ]; then
-		synflood
-## TCP SYN Port Scan using nc
-	elif [ "$opt" = "TCP Port Scanner" ]; then
-		portscan
-	elif [ "$opt" = "Create Listener" ]; then
-		listener
-## Simple Banner Grabber
-	elif [ "$opt" = "Banner Grabber" ]; then
-		bannergrab
-## SSL DOS
-	elif [ "$opt" = "SSL DOS" ]; then
-		ssldos
-## UDP Flood		
- 	elif [ "$opt" = "UDP Flood" ]; then
-		udpflood
-## Slowloris
-	elif [ "$opt" = "Slowloris" ]; then
-		slowloris
-## Recon Network
-    elif [ "$opt" = "Recon Network" ]; then
-        reconnetwork
-## Stealth Scan
-    elif [ "$opt" = "Stealth Scan" ]; then
-        stealthscan
-## Default if no menu option selected is to return an error
-	else
-  		echo  "That's not a valid option! Hit Return to show main menu"
-	fi
-done
+mainmenu
 exit 0
