@@ -401,8 +401,9 @@ stealthscan()
 echo "Since stealth is important, the scan might take a very long time to finish"
 echo "Enter the host/subnet to scan"
 read -i $TARGET -e TARGET
-echo "Enter the speed of scan (0 means very slow and 5 means fast)"
+echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3"
 read -i $SPEED -e SPEED
+: ${SPEED:=3}
 sudo nmap -sS -T $SPEED $TARGET
 }
 ## create menu and show welcome message
