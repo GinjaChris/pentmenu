@@ -392,7 +392,7 @@ reconnetwork()
 echo "Depending on the network size, the scan might take a long time to finish"
 echo "Please enter the network subnet (e.g. 192.168.1.0/24)"
 read -i $SUBNET -e SUBNET
-sudo nmap -sV -sC -A -O $SUBNET
+sudo nmap -Pn -sV -sC -A -O $SUBNET
 }
 
 ## create a stealth scan function
@@ -404,7 +404,7 @@ read -i $TARGET -e TARGET
 echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3"
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
-sudo nmap -sS -T $SPEED $TARGET
+sudo nmap -Pn -sS -T $SPEED $TARGET
 }
 ## create menu and show welcome message
 	clear && echo ""
