@@ -46,6 +46,8 @@ openssl
 
 stunnel
 
+nmap
+
 
 #How to use?
 
