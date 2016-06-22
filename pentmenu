@@ -22,7 +22,7 @@ done
 ## RECONMENU
 reconmenu()
 {
-		reconmenu=("Show IP" "Recon Network" "Stealth Scan" "Create Listener" "Go back")
+		reconmenu=("Show IP" "Recon Network" "Stealth Scan" "Create Listener" "IP Detective" "Go back")
 	select reconopt in "${reconmenu[@]}"; do
 ## show external IP
 	if [ "$reconopt" = "Show IP" ]; then
@@ -33,6 +33,9 @@ reconmenu()
 ## Stealth Scan
     elif [ "$reconopt" = "Stealth Scan" ]; then
         stealthscan
+## IP Detective
+    elif [ "$reconopt" = "IP Detective" ]; then
+        ipdetective
 ## Create an arbitrary listener
 	elif [ "$reconopt" = "Create Listener" ]; then
 		listener
@@ -406,6 +409,24 @@ read -i $SPEED -e SPEED
 : ${SPEED:=3}
 sudo nmap -sS -T $SPEED $TARGET
 }
+## create an ip detective function
+ipdetective()
+{
+echo "This module performs general passive recon on a target IP"
+echo "Is your target a website (y/n)"
+read -i $CHOICE -e CHOICE
+if [[ "$CHOICE" == 'y' ]]; then
+    echo "Enter the website:"
+    read -i $TARGET -e TARGET
+    nslookup $TARGET
+fi
+echo "If your target was a website, then you should now see the IP adress."
+echo "Please enter your target IP adress:"
+read -i $TARGET -e TARGET
+whois -H -d $TARGET
+curl ipinfo.io/$TARGET
+}
+
 ## create menu and show welcome message
 	clear && echo ""
 	echo "Hello and welcome to pentmenu!"
