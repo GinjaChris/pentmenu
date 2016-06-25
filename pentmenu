@@ -405,7 +405,7 @@ echo "It will perform a TCP SYN port scan and attempt OS and service identificat
 echo "Depending on the network size, the scan might take a long time to finish"
 echo "Please enter the network subnet (e.g. 192.168.1.0/24)"
 read -i $SUBNET -e SUBNET
-sudo nmap -Pn -sV -sC -A -O $SUBNET
+sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -sV -sC -A -O $SUBNET
 }
 
 ## create a stealth scan function
