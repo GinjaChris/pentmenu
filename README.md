@@ -9,6 +9,8 @@ Currently implemented modules:
 
 *Show IP
 
+*DNS Recon
+
 *Ping sweep
 
 *Stealth Scan (TCP SYN Port scanner)
@@ -52,6 +54,8 @@ stunnel
 
 nmap
 
+whois
+
 
 #How to use?
 
@@ -77,6 +81,9 @@ Alternatively, use git clone, or download the latest release from https://github
 
 
 *Show IP - uses curl to perform a lookup of your external IP. Runs ip a or ifconfig (as appropriate) to show local interface IP's.
+
+
+*DNS Recon - passive recon, performs a DNS lookup (forward or reverse as appropriate for target input) and a whois lookup of the target.
 
 
 *Ping Sweep - uses nmap to perform an ICMP echo (ping) against the target host or network.
