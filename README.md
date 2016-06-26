@@ -79,7 +79,7 @@ Alternatively, use git clone, or download the latest release from https://github
 *Show IP - uses curl to perform a lookup of your external IP. Runs ip a or ifconfig (as appropriate) to show local interface IP's.
 
 
-*Ping Sweep - uses nmap 
+*Ping Sweep - uses nmap to perform an ICMP echo (ping) against the target host or network.
 
 
 *Network Recon - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.
@@ -129,4 +129,4 @@ This script is only for responsible, authorised use. You are responsible for you
 
 
 #Also see
-Pentmenu is available as a package (https://archstrike.org/packages/pentmenu) on Arch Linux.  Big love to Archstrike (https://archstrike.org/)
+Pentmenu is available as a package (https://archstrike.org/packages/pentmenu) on Arch Linux.  Big love to Archstrike (https://archstrike.org/) and Parrot linux (https://www.parrotsec.org/)
