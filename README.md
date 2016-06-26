@@ -1,15 +1,19 @@
 #pentmenu
 
 
-A simple bash script inspired by pentbox.
+A bash script inspired by pentbox.
 
 Designed to be a simple way to implement various network pentesting functions, including network attacks, using wherever possible readily available software commonly installed on most linux distributions without having to resort to multiple specialist tools.
 
-Currently implemented functions:
+Currently implemented modules:
 
 *Show IP
 
-*Stealth Scan (TCP Port scanner)
+*Ping sweep
+
+*Stealth Scan (TCP SYN Port scanner)
+
+*UDP Scan
 
 *Network Recon
 
@@ -69,14 +73,28 @@ Alternatively, use git clone, or download the latest release from https://github
 
 #More detail
 
+*RECON MODULE*
+
+
 *Show IP - uses curl to perform a lookup of your external IP. Runs ip a or ifconfig (as appropriate) to show local interface IP's.
 
 
-*Stealth Scan - TCP Port scanner using nmap to scan for open ports.
+*Ping Sweep - uses nmap 
 
 
 *Network Recon - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.
 
+
+*Stealth Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.
+
+
+*UDP scan - uses nmap to scan for open UDP ports.
+
+
+*Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, ad-hoc communication, or checking for active scanning on the network.
+
+
+*DOS MODULE*
 
 *TCP Syn Flood - sends a flood of TCP SYN packets using hping3.  If hping3 is not found, it attempts to use the nmap-nping utility instead. Hping3 is preferred since it sends packets as fast as possible.  Options are provided to use a source IP of your interface, or specify (spoof) a source IP, or spoof a random source IP for each packet. 
 Falling back to nmap-nping means sending X number of packets per second until Y number of packets is sent and only allows the use of interface IP or a specified (spoofed) source IP.  
@@ -103,9 +121,6 @@ Defences against this attack include (but are not limited to):
 Limiting the number of TCP connections per client; this will prevent a single machine from making the server unavailable, but is not effective if say, 10,000 clients launch the attack simultaneously.  Additionally, such a defensive measure may negatively impact multiple (legitimate) clients operating behind a forward proxy server.
 
 Limiting the time available to send a complete HTTP request; this is effective since the attack relies on slowly sending headers to the server (the server should await all headers from the client before responding).  If the server limits the time for receiving all headers of a request to 10 seconds (for example) it will severely limit the effectiveness of the attack.  It is possible that such a measure will prevent legitimate clients over slow/lossy connections from accessing the site.
-
-
-*Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, ad-hoc communication, or checking for active scanning on the network.
 
 
 #Disclaimer
