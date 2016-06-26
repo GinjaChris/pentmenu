@@ -22,11 +22,14 @@ done
 ## RECONMENU
 reconmenu()
 {
-		reconmenu=("Show IP" "Ping Sweep" "Recon Network" "Stealth Scan" "UDP Scan" "Create Listener" "Go back")
+		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Recon Network" "Stealth Scan" "UDP Scan" "Create Listener" "Go back")
 	select reconopt in "${reconmenu[@]}"; do
 ## show external IP
 	if [ "$reconopt" = "Show IP" ]; then
 		showip
+## DNS Recon
+    elif [ "$reconopt" = "DNS Recon" ]; then
+        dnsrecon
 ## Ping Sweep
     elif [ "$reconopt" = "Ping Sweep" ]; then
         pingsweep
@@ -78,10 +81,21 @@ dosmenu()
 	fi
 	done
 }
+##create DNS Recon function
+dnsrecon()
+{ echo "This module performs passive recon via forward/reverse name lookups for the target (as appropriate) and performs a whois lookup"
+	echo "Enter target:"
+	read -i $TARGET -e TARGET
+host $TARGET
+if ! [[ $? = 0 ]]; then
+nslookup $TARGET
+fi
+sleep 1 && whois -H $TARGET
+}
 ## create pingsweep function
 pingsweep()
 { echo "This module performs a simple ICMP echo 'ping' sweep"
-	echo "Enter target"
+	echo "Enter target:"
 	read -i $TARGET -e TARGET
 sudo nmap -sP -PE $TARGET
 }
@@ -125,7 +139,7 @@ synflood()
 {		echo "TCP SYN Flood uses hping3...checking for hping3..."
 	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 ## hping3 is found, so use that for TCP SYN Flood
-		echo "Enter target"
+		echo "Enter target:"
 	read -i $TARGET -e TARGET
 		echo "Enter target port"
 	read PORT
@@ -149,9 +163,9 @@ synflood()
 	else echo "hping3 not found :( trying nping instead"
 		echo ""
 		echo "Trying TCP SYN Flood with nping..this will work but is not ideal"
-		echo "Enter target"
+		echo "Enter target:"
 	read -i $TARGET -e TARGET
-		echo "Enter target port"
+		echo "Enter target port:"
 	read PORT
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read SOURCE
@@ -244,11 +258,11 @@ udpflood()
 { echo "UDP Flood uses hping3...checking for hping3..."
 if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 ## hping3 is found, so use that for UDP Flood
-	echo "Enter target"
+	echo "Enter target:"
 		read -i $TARGET -e TARGET
-	echo "Enter target port"
+	echo "Enter target port:"
 		read PORT
-	echo "Enter random string (data to send)"
+	echo "Enter random string (data to send):"
 		read DATA
 	echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
 		read SOURCE
@@ -270,9 +284,9 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 	else echo "hping3 not found :( trying nping instead"
 		echo ""
 		echo "Trying UDP Flood with nping.."
-		echo "Enter target"
+		echo "Enter target:"
 	read -i $TARGET -e TARGET
-		echo "Enter target port"
+		echo "Enter target port:"
 	read PORT
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read SOURCE
@@ -403,7 +417,7 @@ reconnetwork()
 { echo "This module conducts a scan of the entire network using nmap"
 echo "It will perform a TCP SYN port scan and attempt OS and service identification"
 echo "Depending on the network size, the scan might take a long time to finish"
-echo "Please enter the network subnet (e.g. 192.168.1.0/24)"
+echo "Please enter the target (e.g. 192.168.1.0/24):"
 read -i $SUBNET -e SUBNET
 sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -sV -sC -A -O $SUBNET
 }
@@ -412,9 +426,9 @@ sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Tride
 stealthscan()
 { echo "This module lets you scan a host/network very stealthily, using a TCP SYN scan"
 echo "Since stealth is important, the scan might take a very long time to finish"
-echo "Enter the host/subnet to scan"
+echo "Enter the host/subnet to scan:"
 read -i $TARGET -e TARGET
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3"
+echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
 sudo nmap -Pn -sS -T $SPEED $TARGET
@@ -424,7 +438,7 @@ udpscan()
 echo "This may take some time"
 echo "Enter the host/subnet to scan"
 read -i $TARGET -e TARGET
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3"
+echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
 sudo nmap -Pn -sU -T $SPEED $TARGET
@@ -436,4 +450,3 @@ sudo nmap -Pn -sU -T $SPEED $TARGET
 	echo "YOU are responsible for your own actions!"
 	echo ""
 mainmenu
-exit 0
