@@ -90,7 +90,7 @@ host $TARGET
 if ! [[ $? = 0 ]]; then
 nslookup $TARGET
 fi
-sleep 1 && whois -H $TARGET
+sleep 1 && curl ipinfo.io/$TARGET
 }
 ## create pingsweep function
 pingsweep()
