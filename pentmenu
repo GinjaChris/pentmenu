@@ -100,7 +100,7 @@ pingsweep()
 { echo "This module performs a simple ICMP echo 'ping' sweep"
 	echo "Enter target:"
 	read -i $TARGET -e TARGET
-sudo nmap -sP -PE $TARGET
+sudo nmap -sP -PE $TARGET --reason
 }
 ## create stunnel client function
 stunnel_client() 
@@ -422,7 +422,7 @@ echo "It will perform a TCP SYN port scan and attempt OS and service identificat
 echo "Depending on the network size, the scan might take a long time to finish"
 echo "Please enter the target (e.g. 192.168.1.0/24):"
 read -i $SUBNET -e SUBNET
-sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -sV -sC -A -O $SUBNET
+sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -sV -sC -A -O $SUBNET --reason
 }
 
 ## create a stealth scan function
@@ -434,7 +434,7 @@ read -i $TARGET -e TARGET
 echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
-sudo nmap -Pn -sS -T $SPEED $TARGET
+sudo nmap -Pn -sS -T $SPEED $TARGET --reason
 }
 udpscan()
 { echo "This module lets you scan a host/network for open UDP ports"
@@ -444,7 +444,7 @@ read -i $TARGET -e TARGET
 echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
-sudo nmap -Pn -sU -T $SPEED $TARGET
+sudo nmap -Pn -sU -T $SPEED $TARGET --reason
 }
 ## create menu and show welcome message
 	clear && echo ""
