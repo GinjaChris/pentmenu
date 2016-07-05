@@ -54,7 +54,7 @@ stunnel
 
 nmap
 
-whois
+whois (not essential but preferred)
 
 
 #How to use?
@@ -77,22 +77,22 @@ Alternatively, use git clone, or download the latest release from https://github
 
 #More detail
 
-*RECON MODULE*
+*RECON MODULES*
 
 
 *Show IP - uses curl to perform a lookup of your external IP. Runs ip a or ifconfig (as appropriate) to show local interface IP's.
 
 
-*DNS Recon - passive recon, performs a DNS lookup (forward or reverse as appropriate for target input) and a whois lookup of the target.
+*DNS Recon - passive recon, performs a DNS lookup (forward or reverse as appropriate for target input) and a whois lookup of the target.  If whois is not available it will perform a lookup against ipinfo.io (only works for IP's, not hostnames).
 
 
 *Ping Sweep - uses nmap to perform an ICMP echo (ping) against the target host or network.
 
 
-*Network Recon - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.
+*Network Recon - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of IE11 in this mode, to help avoid detection via HTTP. This scan can take a long time to finish, please be patient.
 
 
-*Stealth Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.
+*Stealth Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.  Nmap will not perform a ping sweep prior to performing the TCP SYN scan. This scan can take a long time to finish, please be patient.
 
 
 *UDP scan - uses nmap to scan for open UDP ports.
@@ -101,7 +101,7 @@ Alternatively, use git clone, or download the latest release from https://github
 *Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, ad-hoc communication, or checking for active scanning on the network.
 
 
-*DOS MODULE*
+*DOS MODULES*
 
 *TCP Syn Flood - sends a flood of TCP SYN packets using hping3.  If hping3 is not found, it attempts to use the nmap-nping utility instead. Hping3 is preferred since it sends packets as fast as possible.  Options are provided to use a source IP of your interface, or specify (spoof) a source IP, or spoof a random source IP for each packet. 
 Falling back to nmap-nping means sending X number of packets per second until Y number of packets is sent and only allows the use of interface IP or a specified (spoofed) source IP.  
