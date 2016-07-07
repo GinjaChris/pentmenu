@@ -518,10 +518,12 @@ checkuptime()
 { echo "This module will help you estimate the uptime of a given server."
   echo "Enter your target:"
   read -i $TARGET -e TARGET
-  echo "Enter port (e.g. 80):"
+  echo "Enter port (default is 80):"
   read -i $PORT -e PORT
-  echo "Retries? (3 is ideal, 2 might also work)"
+  : ${PORT:=80}
+  echo "Retries? (3 is ideal and default, 2 might also work)"
   read -i $RETRY -e RETRY
+  : ${RETRY:=3}
   echo "Starting.."
   sudo hping3 --tcp-timestamp -S $TARGET -p $PORT -c $RETRY | grep uptime
   echo "Done."
