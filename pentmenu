@@ -24,7 +24,7 @@ done
 ## RECONMENU
 reconmenu()
 {
-		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Recon Network" "Stealth Scan" "UDP Scan" "Create Listener" "Check Server Uptime" "Go back")
+		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Recon Network" "Stealth Scan" "UDP Scan" "Check Server Uptime" "Go back")
 	select reconopt in "${reconmenu[@]}"; do
 ## show external IP
 	if [ "$reconopt" = "Show IP" ]; then
@@ -44,9 +44,6 @@ reconmenu()
 ## UDP Scan
 	elif [ "$reconopt" = "UDP Scan" ]; then
 		udpscan
-## Create an arbitrary listener
-	elif [ "$reconopt" = "Create Listener" ]; then
-		listener
 ## Check uptime of server
     elif [ "$reconopt" = "Check Server Uptime" ]; then
         checkuptime
@@ -63,7 +60,7 @@ reconmenu()
 ## EXTRACTIONMENU
 extractionmenu()
 {
-        extractionmenu=("Extract File via ICMP" "Receive File via ICMP" "Go back")
+        extractionmenu=("Extract File via ICMP" "Receive File via ICMP" "Create Listener" "Go back")
     select extractopt in "${extractionmenu[@]}"; do
 ## Extract file via ICMP
     if [ "$extractopt" = "Extract File via ICMP" ]; then
@@ -71,6 +68,9 @@ extractionmenu()
 ## Receive file via ICMP
     elif [ "$extractopt" = "Receive File via ICMP" ]; then
         icmpreceive
+## Create an arbitrary listener
+    elif [ "$extractopt" = "Create Listener" ]; then
+		listener
 ## Go back
     elif [ "$extractopt" = "Go back" ]; then
         mainmenu
