@@ -401,24 +401,26 @@ fi
 echo "Enter port number (defaults to 8000):"
 	read PORT
 : ${PORT:=8000}
-	if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
+if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
 		PORT=8000 && echo "You provided a string, not a port number!  Reverting to port 8000"
-	fi
-	if [ "$PORT" -lt "1" ]; then
+fi
+if [ "$PORT" -lt "1" ]; then
 		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000"
 	elif [ "$PORT" -gt "65535" ]; then
 		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000" 
-	else echo "Using netcat to create listener"
 fi
+echo "Enter output file (defaults to pentmenu.listener.out):"
+	read -i $OUTFILE -e OUTFILE
+	: ${OUTFILE:=pentmenu.listener.out}
 echo "Use ctrl c to stop"
 if [ "$PROTO" = "t" ] && [ "$PORT" -lt "1025" ]; then
-	sudo nc -k -l -v -p $PORT > pentmenu.listener.out
+	sudo nc -k -l -v -p $PORT > $OUTFILE
 elif  [ "$PROTO" = "t" ] && [ "$PORT" -gt "1024" ]; then
-	nc -k -l -v -p $PORT > pentmenu.listener.out
+	nc -k -l -v -p $PORT > $OUTFILE
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -lt "1025" ]; then
-	sudo nc -u -k -l -v -p $PORT > pentmenu.listener.out
+	sudo nc -u -k -l -v -p $PORT > $OUTFILE
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
-	nc -u -k -l -v -p $PORT > pentmenu.listener.out
+	nc -u -k -l -v -p $PORT > $OUTFILE
 fi
 }
 
