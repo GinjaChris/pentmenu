@@ -5,32 +5,6 @@ A bash script inspired by pentbox.
 
 Designed to be a simple way to implement various network pentesting functions, including network attacks, using wherever possible readily available software commonly installed on most linux distributions without having to resort to multiple specialist tools.
 
-Currently implemented modules:
-
-*Show IP
-
-*DNS Recon
-
-*Ping sweep
-
-*Stealth Scan (TCP SYN Port scanner)
-
-*UDP Scan
-
-*Network Recon
-
-*TCP Syn Flood
-
-*UDP Flood
-
-*SSL DOS
-
-*Slowloris
-
-*Create a TCP or UDP listener
-
-*More to come...
-
 
 Sudo is implemented where necesssary.
 
@@ -46,7 +20,7 @@ curl
 
 netcat
 
-hping3 (or nping)
+hping3 (or nping can be used as a substitute for flood attacks)
 
 openssl
 
@@ -98,7 +72,7 @@ Alternatively, use git clone, or download the latest release from https://github
 *UDP scan - uses nmap to scan for open UDP ports.
 
 
-*Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, ad-hoc communication, or checking for active scanning on the network.
+*Check Server Uptime - estimates the uptime of the target by querying an open TCP port with hping. Accuracy of the results varies from one machine to another.
 
 
 *DOS MODULES*
@@ -128,6 +102,19 @@ Defences against this attack include (but are not limited to):
 Limiting the number of TCP connections per client; this will prevent a single machine from making the server unavailable, but is not effective if say, 10,000 clients launch the attack simultaneously.  Additionally, such a defensive measure may negatively impact multiple (legitimate) clients operating behind a forward proxy server.
 
 Limiting the time available to send a complete HTTP request; this is effective since the attack relies on slowly sending headers to the server (the server should await all headers from the client before responding).  If the server limits the time for receiving all headers of a request to 10 seconds (for example) it will severely limit the effectiveness of the attack.  It is possible that such a measure will prevent legitimate clients over slow/lossy connections from accessing the site.
+
+
+*EXTRACTION MODULES*
+
+*File extraction via ICMP - This module uses hping to send data with ICMP packets.  Whilst it can send data across several packets, see the caveats below for the ICMP receiver.
+
+
+*File receipt via ICMP - This module uses hping to listen for ICMP packets and record the data.  This works best for receipt of small amounts of data, that fits into a single packet; the current implementation of hpings listener appears to have problems recording any larger amounts of data.
+
+An alternative to using this receiver is to run wireshark to capture the inbound icmp packets, which seems quite happy to reconstruct the data received over several fragmented ICMP packets.
+
+
+*Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, receive files or checking for active scanning on the network. Anything received by the listener is written out to ./pentmenu.listener.out.
 
 
 #Disclaimer
