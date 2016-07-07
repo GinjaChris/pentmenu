@@ -24,7 +24,7 @@ done
 ## RECONMENU
 reconmenu()
 {
-		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Recon Network" "Stealth Scan" "UDP Scan" "Create Listener" "Go back")
+		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Recon Network" "Stealth Scan" "UDP Scan" "Create Listener" "Check Server Uptime" "Go back")
 	select reconopt in "${reconmenu[@]}"; do
 ## show external IP
 	if [ "$reconopt" = "Show IP" ]; then
@@ -47,6 +47,9 @@ reconmenu()
 ## Create an arbitrary listener
 	elif [ "$reconopt" = "Create Listener" ]; then
 		listener
+## Check uptime of server
+    elif [ "$reconopt" = "Check Server Uptime" ]; then
+        checkuptime
 ## Go back		
 	elif [ "$reconopt" = "Go back" ]; then
 		mainmenu
@@ -509,6 +512,19 @@ icmpreceive()
   echo "Done, checking filetype.."
   file $OUTFILE
   echo "Done. You can check the integrity using hashing values"
+}
+## uptime checking function
+checkuptime()
+{ echo "This module will help you estimate the uptime of a given server."
+  echo "Enter your target:"
+  read -i $TARGET -e TARGET
+  echo "Enter port (e.g. 80):"
+  read -i $PORT -e PORT
+  echo "Retries? (3 is ideal, 2 might also work)"
+  read -i $RETRY -e RETRY
+  echo "Starting.."
+  sudo hping3 --tcp-timestamp -S $TARGET -p $PORT -c $RETRY | grep uptime
+  echo "Done."
 }
 ## create menu and show welcome message
 	clear && echo ""
