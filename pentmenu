@@ -383,7 +383,9 @@ fi
 
 ## create listener function
 listener()
-	{ echo "Enter protocol, [t]cp (default) or [u]dp:"
+	{ echo "This module will create a TCP or UDP listener using netcat"
+	echo "Any data (string or file) received will be written out to ./pentmenu.listener.out"
+echo "Enter protocol, [t]cp (default) or [u]dp:"
 read PROTO
 	: ${PROTO:=t}
 if [ "$PROTO" != "t" ] && [ "$PROTO" != "u" ]; then
