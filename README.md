@@ -111,10 +111,10 @@ Limiting the time available to send a complete HTTP request; this is effective s
 
 **EXTRACTION MODULES**
 
-* File extraction via ICMP - This module uses hping to send data with ICMP packets.  Whilst it can send data across several packets, see the caveats below for the ICMP receiver.
+* File extraction via ICMP - This module uses hping to send data with ICMP packets.  It can be extremely useful where only ICMP connectivity is possible.
 
 
-* File receipt via ICMP - This module uses hping to listen for ICMP packets and record the data.  This works best for receipt of small amounts of data, that fits into a single packet; the current implementation of hpings listener appears to have problems recording any larger amounts of data.
+* File receipt via ICMP - This module uses hping to listen for ICMP packets and record the data to an output file of your choice. It will only record packet data starting with the secret that you define.  Therefore the extractor and receiver must use an identical secret. 
 
 An alternative to using this receiver is to run wireshark to capture the inbound icmp packets, which seems quite happy to reconstruct the data received over several fragmented ICMP packets.
 
