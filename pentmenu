@@ -408,38 +408,18 @@ echo "Enter port number (defaults to 8000):"
 		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000"
 	elif [ "$PORT" -gt "65535" ]; then
 		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000" 
-	else echo "Using netcat to create listener:"
+	else echo "Using netcat to create listener"
 fi
 echo "Use ctrl c to stop"
 if [ "$PROTO" = "t" ] && [ "$PORT" -lt "1025" ]; then
 	sudo nc -k -l -v -p $PORT > pentmenu.listener.out
-if ! [[ $? = 0 ]]
-	then 
-		echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
-		sudo nc -l -v -p $PORT > pentmenu.listener.out
-fi
-
 elif  [ "$PROTO" = "t" ] && [ "$PORT" -gt "1024" ]; then
-nc -k -l -v -p $PORT > pentmenu.listener.out
-
-if ! [[ $? = 0 ]]; then 
-	echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
-	nc -l -v -p $PORT > pentmenu.listener.out
-fi
-
+	nc -k -l -v -p $PORT > pentmenu.listener.out
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -lt "1025" ]; then
-sudo nc -u -k -l -v -p $PORT > pentmenu.listener.out
-	if ! [[ $? = 0 ]]; then 
-		echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
-		sudo nc -u -l -v -p $PORT > pentmenu.listener.out
-	fi
+	sudo nc -u -k -l -v -p $PORT > pentmenu.listener.out
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
 	nc -u -k -l -v -p $PORT > pentmenu.listener.out
-		if ! [[ $? = 0 ]]; then 
-			echo "Doesn't look like GNU netcat, so trying again without '-k' option!"
-			nc -u -l -v -p $PORT > pentmenu.listener.out
-		fi
-	fi
+fi
 }
 
 
