@@ -99,7 +99,7 @@ dosmenu()
 	elif [ "$dosopt" = "Slowloris" ]; then
 		slowloris
 ## Distraction scan 
-	elif ["$dosopt" = "Distraction Scan"]; then
+	elif [ "$dosopt" = "Distraction Scan" ]; then
 		distractionscan
 ## Go back	
 	elif [ "$dosopt" = "Go back" ]; then
