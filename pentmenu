@@ -287,7 +287,6 @@ fi
 
 ## create distraction scan function
 distractionscan()
-distraction()
 { echo "This module will send a TCP SYN scan with a spoofed source address"
 echo "This module is designed to be obvious, to distract your target from any real scan or other activity you may actually be performing"
 echo "Enter target:"
