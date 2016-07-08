@@ -173,7 +173,7 @@ synflood()
 		echo "Enter target port"
 	read PORT
 		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
-	read SOURCE
+	read -i $SOURCE -e SOURCE
 	: ${SOURCE:=i}
 	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
 		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
@@ -197,7 +197,7 @@ synflood()
 		echo "Enter target port:"
 	read PORT
 		echo "Enter Source IP or use [i]nterface IP (default):"
-	read SOURCE
+	read -i $SOURCE -e SOURCE
 		: ${SOURCE:=i}
 		echo "Enter number of packets to send per second (default is 10000):"
 	read RATE
@@ -294,7 +294,7 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 	echo "Enter random string (data to send):"
 		read DATA
 	echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
-		read SOURCE
+		read -i $SOURCE -e SOURCE
 	: ${SOURCE:=i}
 	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
 		echo "Starting UDP Flood. Use 'Ctrl c' to end and return to menu"
@@ -318,7 +318,7 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 		echo "Enter target port:"
 	read PORT
 		echo "Enter Source IP or use [i]nterface IP (default):"
-	read SOURCE
+	read -i $SOURCE -e SOURCE
 		: ${SOURCE:=i}
 		echo "Enter number of packets to send per second (default is 10000):"
 	read RATE
