@@ -251,7 +251,7 @@ echo "Enter number of connections to open (default 2000):"
 		read CONNS
 	: ${CONNS:=2000}
 	if ! [[ "$CONNS" =~ ^[0-9]+$ ]]; then
-CONNS=500 && echo "Invalid integer!  Using 2000 connections"
+CONNS=2000 && echo "Invalid integer!  Using 2000 connections"
 	fi
 
 echo "Choose interval between sending headers."
