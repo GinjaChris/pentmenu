@@ -18,7 +18,7 @@ Tested on Debian and Arch.
 
 * curl
 
-* netcat
+* netcat (must support '-k' option, openbsd variant recommended)
 
 * hping3 (or nping can be used as a substitute for flood attacks)
 
@@ -57,7 +57,6 @@ Alternatively, use git clone, or download the latest release from https://github
 ## More detail
 
 **RECON MODULES**
-
 
 * Show IP - uses curl to perform a lookup of your external IP. Runs ip a or ifconfig (as appropriate) to show local interface IP's.
 
@@ -107,6 +106,9 @@ Defences against this attack include (but are not limited to):
 Limiting the number of TCP connections per client; this will prevent a single machine from making the server unavailable, but is not effective if say, 10,000 clients launch the attack simultaneously.  Additionally, such a defensive measure may negatively impact multiple (legitimate) clients operating behind a forward proxy server.
 
 Limiting the time available to send a complete HTTP request; this is effective since the attack relies on slowly sending headers to the server (the server should await all headers from the client before responding).  If the server limits the time for receiving all headers of a request to 10 seconds (for example) it will severely limit the effectiveness of the attack.  It is possible that such a measure will prevent legitimate clients over slow/lossy connections from accessing the site.
+
+
+* Distraction Scan - this is not really a DOS attack but simply launches multiple TCP SYN scans, using hping, from a spoofed IP of your choosing (such as the IP of your worst enemy). It is designed to be an obvious scan in order to trigger any lDS/IPS the target may have and so hopefully obscure any actual scan or other action that you may be carrying out.
 
 
 **EXTRACTION MODULES**
