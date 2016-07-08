@@ -84,7 +84,7 @@ extractionmenu()
 ## DOSMENU
 dosmenu()
 {
-		dosmenu=("TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Distraction Scan""Go back")
+		dosmenu=("TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Distraction Scan" "Go back")
 	select dosopt in "${dosmenu[@]}"; do
 ## TCP SYN Flood DOS
  	if [ "$dosopt" = "TCP SYN Flood" ]; then
