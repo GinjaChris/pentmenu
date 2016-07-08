@@ -84,7 +84,7 @@ extractionmenu()
 ## DOSMENU
 dosmenu()
 {
-		dosmenu=("TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Go back")
+		dosmenu=("TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Distraction Scan" "Go back")
 	select dosopt in "${dosmenu[@]}"; do
 ## TCP SYN Flood DOS
  	if [ "$dosopt" = "TCP SYN Flood" ]; then
@@ -98,6 +98,9 @@ dosmenu()
 ## Slowloris
 	elif [ "$dosopt" = "Slowloris" ]; then
 		slowloris
+## Distraction scan 
+	elif [ "$dosopt" = "Distraction Scan" ]; then
+		distractionscan
 ## Go back	
 	elif [ "$dosopt" = "Go back" ]; then
 		mainmenu
@@ -281,6 +284,19 @@ echo "Slowloris attack ongoing...this is connection $i, interval is $INTERVAL se
 echo "Opened $CONNS connections....returning to menu"
 fi
 }
+
+## create distraction scan function
+distractionscan()
+{ echo "This module will send a TCP SYN scan with a spoofed source address"
+echo "This module is designed to be obvious, to distract your target from any real scan or other activity you may actually be performing"
+echo "Enter target:"
+read -i $TARGET -e TARGET
+echo "Enter spoofed source address:"
+read -i $SOURCE -e SOURCE
+for i in {1..5}; do echo "sending scan $i" && sudo hping3 --scan all --spoof $SOURCE -S $TARGET 2>/dev/null 1>/dev/null; done
+exit 0 
+}
+
 
 ## create UDP Flood function
 udpflood()
