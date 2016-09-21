@@ -66,7 +66,7 @@ If you wish to select Option 1, press '1'.  If you wish to select option 2, pres
 Menus are used to select options and thus allows you to run modules.  Modules allow you to carry out actions.
 Once within a module you may be asked questions.  Consider the following example:
 
-Would you like to do something?  [y]es or [no] (default):
+Would you like to do something?  [y]es or [n]o (default):
 
 
 If you want to do something, type 'y' and hit Return.
