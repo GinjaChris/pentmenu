@@ -60,6 +60,7 @@ Some people just don't get it....don't be one of them!
 Script usage is simple, menus are in the following format:
 
 1) Option 1
+
 2) Option 2
 
 If you wish to select Option 1, press '1'.  If you wish to select option 2, press '2'.
