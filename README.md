@@ -53,8 +53,29 @@ $ ./pentmenu
 
 Alternatively, use git clone, or download the latest release from https://github.com/GinjaChris/pentmenu/releases, extract it and run the script.
 
+## Script usage (aka how not to be a n00b; inspired by a Youtube video)
 
-## More detail
+Some people just don't get it....don't be one of them!
+
+Script usage is simple, menus are in the following format:
+
+1. Option 1
+2. Option 2
+
+If you wish to select Option 1, press '1'.  If you wish to select option 2, press '2'.
+Menus are used to select options and thus allows you to run modules.  Modules allow you to carry out actions.
+Once within a module you may be asked questions.  Consider the following example:
+
+Would you like to do something?  [y]es or [no] (default):
+
+
+If you want to do something, type 'y' and hit Return.
+If you do not want to do something, type 'n' and hit Return.
+If you type nothing and hit Return, the default action is carried out.  In this example, this would be the same as typing 'n' and hitting Return.
+
+If you have understood the above, congratulations!  You are capable of using pentmenu!
+
+## Module detail
 
 **RECON MODULES**
 
