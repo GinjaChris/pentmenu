@@ -546,5 +546,6 @@ checkuptime()
 	echo "Please report all bugs, improvements and suggestions to https://github.com/GinjaChris/pentmenu/issues"
 	echo "This software is only for responsible, authorised use."
 	echo "YOU are responsible for your own actions!"
+	echo "Please review the readme at https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md before proceeding"
 	echo ""
 mainmenu
