@@ -145,7 +145,7 @@ Limiting the time available to send a complete HTTP request; this is effective s
 An alternative to using this receiver is to run wireshark to capture the inbound icmp packets, which seems quite happy to reconstruct the data received over several fragmented ICMP packets.
 
 
-* Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, receive files or checking for active scanning on the network. Anything received by the listener is written out to ./pentmenu.listener.out.
+* Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, receive files or checking for active scanning on the network. Anything received by the listener is written out to ./pentmenu.listener.out or a file of your choice.
 
 
 ## Disclaimer
