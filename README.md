@@ -98,7 +98,7 @@ If you have understood the above, congratulations!  You are capable of using pen
 * UDP scan - uses nmap to scan for open UDP ports.
 
 
-* Check Server Uptime - estimates the uptime of the target by querying an open TCP port with hping. Accuracy of the results varies from one machine to another.
+* Check Server Uptime - estimates the uptime of the target by querying an open TCP port with hping. Accuracy of the results varies from one machine to another; this does not work against all servers.
 
 
 **DOS MODULES**
