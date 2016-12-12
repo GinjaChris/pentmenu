@@ -139,9 +139,9 @@ fi
 ## create pingsweep function
 pingsweep()
 { echo "This module performs a simple ICMP echo 'ping' sweep"
-	echo "Enter target:"
-	read -i $TARGET -e TARGET
-sudo nmap -sP -PE $TARGET --reason
+	echo "Please enter the target (e.g. 192.168.1.0/24):"
+	read -i $SUBNET -e SUBNET
+sudo nmap -sP -PE $SUBNET --reason
 }
 ## create stunnel client function
 stunnel_client() 
