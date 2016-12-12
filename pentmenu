@@ -3,7 +3,7 @@ PS3="Pentmenu>"
 ## MAINMENU
 mainmenu()
 {
-mainmenu=("Recon" "DOS" "Extraction" "Quit")
+mainmenu=("Recon" "DOS" "Extraction" "View Readme" "Quit")
 select opt in "${mainmenu[@]}"; do
 	if [ "$opt" = "Quit" ]; then
 	echo "Quitting" && sleep 1 && clear
