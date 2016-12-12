@@ -14,6 +14,8 @@ reconmenu
 dosmenu
     elif [ "$opt" = "Extraction" ]; then
 extractionmenu
+  	elif [ "$opt" = "View Readme" ]; then
+showreadme
 	else 
 	echo "That's not a valid option! Hit Return to show main menu"
 	fi
@@ -57,30 +59,6 @@ reconmenu()
 	done
 }
 
-## EXTRACTIONMENU
-extractionmenu()
-{
-        extractionmenu=("Extract File via ICMP" "Receive File via ICMP" "Create Listener" "Go back")
-    select extractopt in "${extractionmenu[@]}"; do
-## Extract file via ICMP
-    if [ "$extractopt" = "Extract File via ICMP" ]; then
-        icmpextract
-## Receive file via ICMP
-    elif [ "$extractopt" = "Receive File via ICMP" ]; then
-        icmpreceive
-## Create an arbitrary listener
-    elif [ "$extractopt" = "Create Listener" ]; then
-		listener
-## Go back
-    elif [ "$extractopt" = "Go back" ]; then
-        mainmenu
-## Default error
-    else
-        echo "That's not a valid option! Hit Return to show menu"
-    fi
-    done
-}
-
 ## DOSMENU
 dosmenu()
 {
@@ -110,6 +88,40 @@ dosmenu()
 	fi
 	done
 }
+
+
+## EXTRACTIONMENU
+extractionmenu()
+{
+        extractionmenu=("Extract File via ICMP" "Receive File via ICMP" "Create Listener" "Go back")
+    select extractopt in "${extractionmenu[@]}"; do
+## Extract file via ICMP
+    if [ "$extractopt" = "Extract File via ICMP" ]; then
+        icmpextract
+## Receive file via ICMP
+    elif [ "$extractopt" = "Receive File via ICMP" ]; then
+        icmpreceive
+## Create an arbitrary listener
+    elif [ "$extractopt" = "Create Listener" ]; then
+		listener
+## Go back
+    elif [ "$extractopt" = "Go back" ]; then
+        mainmenu
+## Default error
+    else
+        echo "That's not a valid option! Hit Return to show menu"
+    fi
+    done
+}
+
+##SHOWREADME
+showreadme()
+{
+curl -s https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md | more
+}
+
+
+
 ##create DNS Recon function
 dnsrecon()
 { echo "This module performs passive recon via forward/reverse name lookups for the target (as appropriate) and performs a whois lookup"
@@ -227,7 +239,6 @@ synflood()
 	fi
 	fi
 }
-
 
 ## create showip function
 showip()
