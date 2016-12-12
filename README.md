@@ -30,6 +30,8 @@ Tested on Debian and Arch.
 
 * whois (not essential but preferred)
 
+* nslookup (or 'host')
+
 ## How to use?
 
 
