@@ -91,10 +91,10 @@ If you have understood the above, congratulations!  You are capable of using pen
 * Ping Sweep - uses nmap to perform an ICMP echo (ping) against the target host or network.
 
 
-* Network Recon - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of IE11 in this mode, to help avoid detection via HTTP. This scan can take a long time to finish, please be patient.
+* Network Recon - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of IE11 in this mode, to help avoid detection via HTTP. The most common 1000 ports are scanned. This module can, of course, be used to scan a single host or a full network. This scan can take a long time to finish, please be patient.
 
 
-* Stealth Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.  Nmap will not perform a ping sweep prior to performing the TCP SYN scan. This scan can take a long time to finish, please be patient.
+* Stealth Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.  Nmap will not perform a ping sweep prior to performing the TCP SYN scan. Unlike the Network Recon module, no attempt is made to grab banners etc. This module scans all ports, 1 to 65,535. This module can, of course, be used to scan a single host or a full network. This scan can take a long time to finish, please be patient.
 
 
 * UDP scan - uses nmap to scan for open UDP ports.
