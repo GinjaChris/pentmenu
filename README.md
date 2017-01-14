@@ -105,11 +105,20 @@ If you have understood the above, congratulations!  You are capable of using pen
 
 **DOS MODULES**
 
-* TCP Syn Flood - sends a flood of TCP SYN packets using hping3.  If hping3 is not found, it attempts to use the nmap-nping utility instead. Hping3 is preferred since it sends packets as fast as possible.  Options are provided to use a source IP of your interface, or specify (spoof) a source IP, or spoof a random source IP for each packet.
+* TCP SYN Flood - sends a flood of TCP SYN packets using hping3.  If hping3 is not found, it attempts to use the nmap-nping utility instead. Hping3 is preferred since it sends packets as fast as possible.  Options are provided to use a source IP of your interface, or specify (spoof) a source IP, or spoof a random source IP for each packet.
 Optionally, you can add data to the SYN packet.  All SYN packets have the fragmentation bit set and use hpings virtual MTU of 16 bytes, guaranteeing fragmentation.
 Falling back to nmap-nping means sending X number of packets per second until Y number of packets is sent and only allows the use of interface IP or a specified (spoofed) source IP.  
 A TCP SYN flood is unlikely to break a server, but is a good way to test switch/router/firewall infrastructure and state tables.
 Note that whilst hping will report the outbound interface and IP which might make you think script does not work as expected, the source IP *will* be set as specified; review a packet capture of the traffic if in doubt!
+
+
+* TCP ACK Flood - offers the same options as the SYN flood, but sets the ACK (Acknowledgement) TCP flag instead.
+Some systems will spend excessive CPU cycles processing such packets.  If the source IP is set to that of an established connection, it is possible that an estabished connection can be disrupted by this 'blind' TCP ACK Flood.  This attack is considered 'blind' because it does not take into account any details of any established connection (like sequence or acknowledgement numbers).  For more information see https://www.staminus.net/a-ddos-attack-explained-tcp-ack/ for example.
+
+
+* TCP RST Flood - offers the same options as the SYN flood, but sets the RST (Reset) TCP flag instead.
+Such an attack could interrupt established connections if the source IP is set to that of an established connection.
+See https://en.wikipedia.org/wiki/TCP_reset_attack for example.
 
 
 * UDP Flood - much like the TCP SYN Flood but instead sends UDP packets to the specified host:port. Like the TCP SYN Flood function, hping3 is used but if it is not found, it attempts to use nmap-nping instead.  All options are the same as TCP SYN Flood, except you can specify data to send in the UDP packets.
@@ -132,7 +141,6 @@ Defences against this attack include (but are not limited to):
 Limiting the number of TCP connections per client; this will prevent a single machine from making the server unavailable, but is not effective if say, 10,000 clients launch the attack simultaneously.  Additionally, such a defensive measure may negatively impact multiple (legitimate) clients operating behind a forward proxy server.
 
 Limiting the time available to send a complete HTTP request; this is effective since the attack relies on slowly sending headers to the server (the server should await all headers from the client before responding).  If the server limits the time for receiving all headers of a request to 10 seconds (for example) it will severely limit the effectiveness of the attack.  It is possible that such a measure will prevent legitimate clients over slow/lossy connections from accessing the site.
-
 
 * Distraction Scan - this is not really a DOS attack but simply launches multiple TCP SYN scans, using hping, from a spoofed IP of your choosing (such as the IP of your worst enemy). It is designed to be an obvious scan in order to trigger any lDS/IPS the target may have and so hopefully obscure any actual scan or other action that you may be carrying out.
 
