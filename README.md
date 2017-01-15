@@ -147,16 +147,14 @@ Limiting the time available to send a complete HTTP request; this is effective s
 
 **EXTRACTION MODULES**
 
-* File extraction via ICMP - This module uses hping to send data with ICMP packets.  It can be extremely useful where only ICMP connectivity is possible. See https://github.com/GinjaChris/pentmenu/issues/35 for further details and caveats.
-Suffice it to say that the extraction module does work, abeit in a slightly unusual way.
-
-
-* File receipt via ICMP - This module uses hping to listen for ICMP packets and record the data to an output file of your choice. It will only record packet data starting with the secret that you define.  Therefore the extractor and receiver must use an identical secret. 
-
-An alternative to using this receiver is to run wireshark to capture the inbound icmp packets, which seems quite happy to reconstruct the data received over several fragmented ICMP packets.
+* Send File - This module uses netcat to send data with TCP or UDP.  It can be extremely useful for extracting data.
+An md5 and sha512 checksum is calculated and displayed prior to sending the file.
+The file can be sent to a server of your choice; the Listener is designed to receive these files.
 
 
 * Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, receive files or checking for active scanning on the network. Anything received by the listener is written out to ./pentmenu.listener.out or a file of your choice.
+When receiving files over UDP, the listener must be manually closed with 'Crtl C'.  This is because we have to force netcat to stay open to receive multiple packets, since UDP is a connectionless protocol.
+When receiving files over TCP, the connection automatically closes after the client closes their connection (once the file is transferred).
 
 
 ## Disclaimer
