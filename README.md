@@ -147,7 +147,8 @@ Limiting the time available to send a complete HTTP request; this is effective s
 
 **EXTRACTION MODULES**
 
-* File extraction via ICMP - This module uses hping to send data with ICMP packets.  It can be extremely useful where only ICMP connectivity is possible.
+* File extraction via ICMP - This module uses hping to send data with ICMP packets.  It can be extremely useful where only ICMP connectivity is possible. See commit 59f755b578d0b50d607b38541ba6c695f4d81705 for further details and caveats.
+Suffice it to say that the extraction module does work, abeit in a slightly unusual way.
 
 
 * File receipt via ICMP - This module uses hping to listen for ICMP packets and record the data to an output file of your choice. It will only record packet data starting with the secret that you define.  Therefore the extractor and receiver must use an identical secret. 
