@@ -153,7 +153,7 @@ The file can be sent to a server of your choice; the Listener is designed to rec
 
 
 * Listener - uses netcat to open a listener on a configurable TCP or UDP port.  This can be useful for testing syslog connectivity, receive files or checking for active scanning on the network. Anything received by the listener is written out to ./pentmenu.listener.out or a file of your choice.
-When receiving files over UDP, the listener must be manually closed with 'Crtl C'.  This is because we have to force netcat to stay open to receive multiple packets, since UDP is a connectionless protocol.
+When receiving files over UDP, the listener must be manually closed with 'Ctrl C'.  This is because we have to force netcat to stay open to receive multiple packets, since UDP is a connectionless protocol.
 When receiving files over TCP, the connection automatically closes after the client closes their connection (once the file is transferred).
 
 
