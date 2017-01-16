@@ -55,28 +55,6 @@ $ ./pentmenu
 
 Alternatively, use git clone, or download the latest release from https://github.com/GinjaChris/pentmenu/releases, extract it and run the script.
 
-## Script usage (aka how not to be a n00b; inspired by a Youtube video)
-
-Some people just don't get it....don't be one of them!
-
-Script usage is simple, menus are in the following format:
-
-1) Option 1
-
-2) Option 2
-
-If you wish to select Option 1, press '1'.  If you wish to select option 2, press '2'.
-Menus are used to select options and thus allows you to run modules.  Modules allow you to carry out actions.
-Once within a module you may be asked questions.  Consider the following example:
-
-Would you like to do something?  [y]es or [n]o (default):
-
-
-If you want to do something, type 'y' and hit Return.
-If you do not want to do something, type 'n' and hit Return.
-If you type nothing and hit Return, the default action is carried out.  In this example, this would be the same as typing 'n' and hitting Return.
-
-If you have understood the above, congratulations!  You are capable of using pentmenu!
 
 ## Module detail
 
@@ -134,7 +112,7 @@ It is very useful to run this against loadbalancers/proxies/SSL-enabled servers 
 * Slowloris - uses netcat to slowly send HTTP Headers to the target host:port with the intention of starving it of resources.  This is effective against many, although not all, HTTP servers, provided the connections can be held open for long enough.  Therefore this attack is only effective if the server does not limit the time available to send a complete HTTP request.
 Some implementations of this attack use clearly identifiable headers which is not the case here.  The number of connections to open to the target is configurable. 
 The interval between sending each header line is configurable, with the default being a random value between 5 and 15 seconds. The idea is to send headers slowly, but not so slow that the servers idle timeout closes the connection.
-The option to use SSL (SSL/TLS) is given, which requires stunnel and allows the attack to be used against a HTTPS server.
+The option to use SSL (SSL/TLS) is given, which requires stunnel and allows the attack to be used against a HTTPS server.  You don't use the SSL option against a plain HTTP server.
 
 Defences against this attack include (but are not limited to):
 
