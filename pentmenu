@@ -846,8 +846,18 @@ echo "Enter the IP of the receving server:"
 #need to know the IP of the receiving end
   read -i $RECEIVER -e RECEIVER
 #need to know a destination port on the server
-  echo "Enter port number for the destination server:"
+  echo "Enter port number for the destination server (defaults to 80):"
 	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #what file are we sending?
   echo "Enter the FULL PATH of the file you want to extract:"
   read -i $EXTRACT -e EXTRACT
