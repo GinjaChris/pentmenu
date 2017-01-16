@@ -100,7 +100,7 @@ showip()
 dnsrecon()
 { echo "This module performs passive recon via forward/reverse name lookups for the target (as appropriate) and performs a whois lookup"
 	echo "Enter target:"
-#need a taget IP/hostname to check
+#need a target IP/hostname to check
 	read -i $TARGET -e TARGET
 host $TARGET
 #if host command doesnt work try nslookup instead
@@ -125,7 +125,7 @@ pingsweep()
 #need to know the subnet to scan for live hosts using pings
 	read -i $SUBNET -e SUBNET
 #launch ping sweep using nmap
-#this coud be done with ping command, but that is extremely difficult to code in bash for unusual subnets so we use nmap instead
+#this could be done with ping command, but that is extremely difficult to code in bash for unusual subnets so we use nmap instead
 sudo nmap -sP -PE $SUBNET --reason
 }
 ##END PINGSWEEP##
@@ -196,6 +196,15 @@ checkuptime()
   echo "Enter port (default is 80):"
   read -i $PORT -e PORT
   : ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #how many times to retry the check?
   echo "Retries? (3 is ideal and default, 2 might also work)"
   read -i $RETRY -e RETRY
@@ -263,13 +272,23 @@ synflood()
 #need a target IP/hostname
 	read -i $TARGET -e TARGET
 #need a port to send TCP SYN packets to
-		echo "Enter target port"
+		echo "Enter target port (defaults to 80):"
 	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #What source address to use? Manually defined, or random, or outgoing interface IP?
 		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
 	: ${SOURCE:=i}
-#shoud any data be sent with the SYN packet?  Default is to send no data
+#should any data be sent with the SYN packet?  Default is to send no data
 	echo "Send data with SYN packet? [y]es or [n]o (default)"
 	read -i $SENDDATA -e SENDDATA
 	: ${SENDDATA:=n}
@@ -309,8 +328,18 @@ synflood()
 		echo "Enter target:"
 	read -i $TARGET -e TARGET
 #need a valid target port
-		echo "Enter target port:"
+		echo "Enter target port (defaults to 80):"
 	read -i $PORT -e PORT
+		: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #define source IP or use outgoing interface IP
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
@@ -345,13 +374,23 @@ ackflood()
 #need a target IP/hostname
 	read -i $TARGET -e TARGET
 #need a port to send TCP ACK packets to
-		echo "Enter target port"
+		echo "Enter target port (defaults to 80):"
 	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #What source address to use? Manually defined, or random, or outgoing interface IP?
 		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
 	: ${SOURCE:=i}
-#shoud any data be sent with the ACK packet?  Default is to send no data
+#should any data be sent with the ACK packet?  Default is to send no data
 	echo "Send data with ACK packet? [y]es or [n]o (default)"
 	read -i $SENDDATA -e SENDDATA
 	: ${SENDDATA:=n}
@@ -391,8 +430,18 @@ ackflood()
 		echo "Enter target:"
 	read -i $TARGET -e TARGET
 #need a valid target port
-		echo "Enter target port:"
+		echo "Enter target port (defaults to 80):"
 	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #define source IP or use outgoing interface IP
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
@@ -427,13 +476,23 @@ rstflood()
 #need a target IP/hostname
 	read -i $TARGET -e TARGET
 #need a port to send TCP RST packets to
-		echo "Enter target port"
+		echo "Enter target port (defaults to 80):"
 	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #What source address to use? Manually defined, or random, or outgoing interface IP?
 		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
 	: ${SOURCE:=i}
-#shoud any data be sent with the RST packet?  Default is to send no data
+#should any data be sent with the RST packet?  Default is to send no data
 	echo "Send data with RST packet? [y]es or [n]o (default)"
 	read -i $SENDDATA -e SENDDATA
 	: ${SENDDATA:=n}
@@ -473,8 +532,18 @@ rstflood()
 		echo "Enter target:"
 	read -i $TARGET -e TARGET
 #need a valid target port
-		echo "Enter target port:"
+		echo "Enter target port (defaults to 80):"
 	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #define source IP or use outgoing interface IP
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
@@ -510,8 +579,18 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 	echo "Enter target:"
 		read -i $TARGET -e TARGET
 #need a valid target UDP port
-	echo "Enter target port:"
+	echo "Enter target port (defaults to 80):"
 		read -i $PORT -e PORT
+		: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #what data should we send with each packet?
 #curently only accepts stdin.  Can't define a file to read from
 	echo "Enter random string (data to send):"
@@ -542,9 +621,19 @@ if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
 		echo "Enter target:"
 #need a valid target IP/hostname
 	read -i $TARGET -e TARGET
-		echo "Enter target port:"
+		echo "Enter target port (defaults to 80):"
 #need a port to send UDP packets to
 	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #what source address should we use in sent packets?
 		echo "Enter Source IP or use [i]nterface IP (default):"
 	read -i $SOURCE -e SOURCE
@@ -644,7 +733,7 @@ PORT=80 && echo "Invalid port number chosen! Reverting port 80"
 PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	else echo "Using Port $PORT"
 	fi
-#how many conenctions should we attempt to open with the target?
+#how many connections should we attempt to open with the target?
 #there is no hard limit, it depends on available resources.  Default is 2000 simultaneous connections
 echo "Enter number of connections to open (default 2000):"
 		read CONNS
@@ -757,8 +846,18 @@ echo "Enter the IP of the receving server:"
 #need to know the IP of the receiving end
   read -i $RECEIVER -e RECEIVER
 #need to know a destination port on the server
-  echo "Enter port number for the destination server:"
+  echo "Enter port number for the destination server (defaults to 80):"
 	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
 #what file are we sending?
   echo "Enter the FULL PATH of the file you want to extract:"
   read -i $EXTRACT -e EXTRACT
