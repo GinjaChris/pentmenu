@@ -100,7 +100,7 @@ showip()
 dnsrecon()
 { echo "This module performs passive recon via forward/reverse name lookups for the target (as appropriate) and performs a whois lookup"
 	echo "Enter target:"
-#need a taget IP/hostname to check
+#need a target IP/hostname to check
 	read -i $TARGET -e TARGET
 host $TARGET
 #if host command doesnt work try nslookup instead
@@ -125,7 +125,7 @@ pingsweep()
 #need to know the subnet to scan for live hosts using pings
 	read -i $SUBNET -e SUBNET
 #launch ping sweep using nmap
-#this coud be done with ping command, but that is extremely difficult to code in bash for unusual subnets so we use nmap instead
+#this could be done with ping command, but that is extremely difficult to code in bash for unusual subnets so we use nmap instead
 sudo nmap -sP -PE $SUBNET --reason
 }
 ##END PINGSWEEP##
