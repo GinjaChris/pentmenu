@@ -39,7 +39,7 @@ done
 reconmenu()
 {
 #build a menu for the recon modules using bash select
-		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Recon Network" "Stealth Scan" "UDP Scan" "Check Server Uptime" "Go back")
+		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Quick Scan" "Detailed Scan" "UDP Scan" "Check Server Uptime" "Go back")
 	select reconopt in "${reconmenu[@]}"; do
 #show external IP & interface IP(s)
 	if [ "$reconopt" = "Show IP" ]; then
@@ -51,11 +51,11 @@ reconmenu()
     elif [ "$reconopt" = "Ping Sweep" ]; then
         pingsweep
 #Recon Network
-    elif [ "$reconopt" = "Recon Network" ]; then
-        reconnetwork
+    elif [ "$reconopt" = "Quick Scan" ]; then
+        quickscan
 #Stealth Scan
-    elif [ "$reconopt" = "Stealth Scan" ]; then
-        stealthscan
+    elif [ "$reconopt" = "Detailed Scan" ]; then
+        detailedscan
 #UDP Scan
 	elif [ "$reconopt" = "UDP Scan" ]; then
 		udpscan
@@ -123,47 +123,58 @@ pingsweep()
 { echo "This module performs a simple ICMP echo 'ping' sweep"
 	echo "Please enter the target (e.g. 192.168.1.0/24):"
 #need to know the subnet to scan for live hosts using pings
-	read -i $SUBNET -e SUBNET
+	read -i $TARGET -e TARGET
 #launch ping sweep using nmap
 #this could be done with ping command, but that is extremely difficult to code in bash for unusual subnets so we use nmap instead
-sudo nmap -sP -PE $SUBNET --reason
+sudo nmap -sP -PE $TARGET --reason
 }
 ##END PINGSWEEP##
 #################
 
 ######################
-##START RECONNETWORK##
-reconnetwork()
+##START QUICKSCAN##
+quickscan()
 { echo "This module conducts a scan using nmap"
-echo "It is designed to scan an entire network for host information"
-echo "It will perform a TCP SYN port scan of the 1000 most common ports and attempt OS and service identification"
-echo "Depending on the network size, the scan might take a long time to finish"
-echo "Please enter the target (e.g. 192.168.1.0/24):"
+echo "It is designed to scan an entire network for common open ports"
+echo "It will perform a TCP SYN port scan of the 1000 most common ports"
+echo "Depending on the target, the scan might take a long time to finish"
+echo "Please enter the target host/IP/subnet:"
 #we need to know where to scan.  Whilst a hostname is possible, this module is designed to scan a subnet range
-read -i $SUBNET -e SUBNET
-#launch the scan.  Note the change in user-agent from the default nmap value to help avoid detection
-sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -sV -sC -A -O $SUBNET --reason
-}
-## END RECONNETWORK##
-#####################
-
-#####################
-##START STEALTHSCAN##
-stealthscan()
-{ echo "This module lets you scan a host/network very stealthily, using a TCP SYN scan"
-echo "This scans ALL ports on the target. This scan might take a very long time to finish, please be patient"
-echo "Enter the host/subnet to scan:"
-#need a target hostname/IP
 read -i $TARGET -e TARGET
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
+echo "Enter the speed of scan (0 means very slow and 5 means fast).  
+Slower scans are more subtle, but faster means less waiting around.
+Default is 3:"
 #How fast should we scan the target?
 #Faster speed is more likely to be detected by IDS, but is less waiting around
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
-#scan using nmap
-sudo nmap -Pn -p 1-65535 -sS -T $SPEED $TARGET --reason
+#launch the scan
+sudo nmap -Pn -sS -T $SPEED $TARGET --reason
 }
-##END STEALTHSCAN##
+## END QUICKSCAN##
+#####################
+
+#####################
+##START DETAILEDSCAN##
+detailedscan()
+{ echo "This module performs a scan using nmap"
+echo "It is designed to perform a detailed scan of a specific host but can be used against an entire network"
+echo "This scans ALL ports on the target. It also attempts OS detection and gathers service information"
+echo "This scan might take a very long time to finish, please be patient"
+echo "Enter the hostname/IP/subnet to scan:"
+#need a target hostname/IP
+read -i $TARGET -e TARGET
+echo "Enter the speed of scan (0 means very slow and 5 means fast).  
+Slower scans are more subtle, but faster means less waiting around.
+Default is 3:"
+#How fast should we scan the target?
+#Faster speed is more likely to be detected by IDS, but is less waiting around
+read -i $SPEED -e SPEED
+: ${SPEED:=3}
+#scan using nmap.  Note the change in user-agent from the default nmap value to help avoid detection
+sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -p 1-65535 -sV -sC -A -O -T $SPEED $TARGET --reason
+}
+##END DETAILEDSCAN##
 ###################
 
 #################
@@ -176,7 +187,9 @@ echo "Enter the host/subnet to scan:"
 read -i $TARGET -e TARGET
 #How fast should we scan the target?
 #Faster speed is more likely to be detected by IDS, but is less waiting around
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  Default is 3:"
+echo "Enter the speed of scan (0 means very slow and 5 means fast).  
+Slower scans are more subtle, but faster means less waiting around.
+Default is 3:"
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
 #launch the scan using nmap
@@ -189,6 +202,7 @@ sudo nmap -Pn -p 1-65535 -sU -T $SPEED $TARGET --reason
 ##START CHECKUPTIME##
 checkuptime()
 { echo "This module will attempt to estimate the uptime of a given server, using hping3"
+  echo "This is not guaranteed to work"
   echo "Enter your target:"
 #need a target IP/hostname
   read -i $TARGET -e TARGET
@@ -962,7 +976,7 @@ curl -s https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md |
 #################
 ##START STUNNEL##
 stunnel_client() 
-{ echo "use SSL? [y]es or [n]o (default):"
+{ echo "use SSL/TLS? [y]es or [n]o (default):"
 	read SSL
 	: ${SSL:=n}
 #if not using SSL/TLS, carry on what we were doing
@@ -1013,12 +1027,21 @@ fi }
 #everything before this is a function and functions have to be defined before they can be used
 #so the welcome message MUST be placed at the end of the script
 	clear && echo ""
-	echo "Hello and welcome to pentmenu!"
-	echo "Please report all bugs, improvements and suggestions to https://github.com/GinjaChris/pentmenu/issues"
-	echo "This software is only for responsible, authorised use."
-	echo "YOU are responsible for your own actions!"
-	echo "Please review the readme at https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md before proceeding"
-	echo ""
+echo " ________ _______  _       _________ _______  ________  _                "
+echo "|  ____  ||  ____ \| \    /|\__   __/|       ||  ____ \| \    /||\     /|"
+echo "| |    | || |    \/|  \  | |   | |   | || || || |    \/|  \  | || |   | |"
+echo "| |____| || |__    |   \ | |   | |   | || || || |__    |   \ | || |   | |"
+echo "|  ______||  __)   | |\ \| |   | |   | ||_|| ||  __)   | |\ \| || |   | |"
+echo "| |       | |      | | \   |   | |   | |   | || |      | | \   || |   | |"
+echo "| |       | |____/\| |  \  |   | |   | |   | || |____/\| |  \  || |___| |"
+echo "|/        (_______/|/    \_|   |_|   |/     \||_______/|/    \_||_______|"
+echo ""
+echo "Welcome to pentmenu!"
+echo "Please report all bugs, improvements and suggestions to https://github.com/GinjaChris/pentmenu/issues"
+echo "This software is only for responsible, authorised use."
+echo "YOU are responsible for your own actions!"
+echo "Please review the readme at https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md before proceeding"
+echo ""
 mainmenu
 ##END WELCOME MESSAGE##
 #######################
