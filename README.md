@@ -69,13 +69,13 @@ Alternatively, use git clone, or download the latest release from https://github
 * Ping Sweep - uses nmap to perform an ICMP echo (ping) against the target host or network.
 
 
-* Network Recon - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of IE11 in this mode, to help avoid detection via HTTP. The most common 1000 ports are scanned. This module can, of course, be used to scan a single host or a full network. This scan can take a long time to finish, please be patient.
+* Quick Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.  Nmap will not perform a ping sweep prior to performing the TCP SYN scan. This module scans the 1,000 most common ports. This module can, of course, be used to scan a single host or a full network. This scan can take a long time to finish, please be patient.
 
 
-* Stealth Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.  Nmap will not perform a ping sweep prior to performing the TCP SYN scan. Unlike the Network Recon module, no attempt is made to grab banners etc. This module scans all ports, 1 to 65,535. This module can, of course, be used to scan a single host or a full network. This scan can take a long time to finish, please be patient.
+* Detailed Scan - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of IE11 in this mode, to help avoid detection via HTTP. All TCP ports on the target (hostname/IP/subnet) are scanned. This scan can take a long time to finish, please be patient.
 
 
-* UDP scan - uses nmap to scan for open UDP ports.
+* UDP scan - uses nmap to scan for open UDP ports. All UDP ports are scanned.
 
 
 * Check Server Uptime - estimates the uptime of the target by querying an open TCP port with hping. Accuracy of the results varies from one machine to another; this does not work against all servers.
@@ -88,6 +88,7 @@ Optionally, you can add data to the SYN packet.  All SYN packets have the fragme
 Falling back to nmap-nping means sending X number of packets per second until Y number of packets is sent and only allows the use of interface IP or a specified (spoofed) source IP.  
 A TCP SYN flood is unlikely to break a server, but is a good way to test switch/router/firewall infrastructure and state tables.
 Note that whilst hping will report the outbound interface and IP which might make you think script does not work as expected, the source IP *will* be set as specified; review a packet capture of the traffic if in doubt!
+Since the source port is definable, it is simple to launch a LAND attack for example.  The ability to set the source port also allows, for example, sending SYN packets to one target and forcing the SYN-ACK responses to a second target.
 
 
 * TCP ACK Flood - offers the same options as the SYN flood, but sets the ACK (Acknowledgement) TCP flag instead.
