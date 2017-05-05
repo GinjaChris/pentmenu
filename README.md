@@ -99,6 +99,9 @@ Some systems will spend excessive CPU cycles processing such packets.  If the so
 Such an attack could interrupt established connections if the source IP is set to that of an established connection.
 See https://en.wikipedia.org/wiki/TCP_reset_attack for example.
 
+* TCP XMAS Flood - similar to the SYN and ACK floods, but sends packets with all TCP flags set (CWR,ECN,URG,ACK,PSH,RST,SYN,FIN).  The packet is considered to be 'lit up like a christmase tree'.  Theoretically at least, such a packet requires more resources for the receiver to process than a standard packet.
+However, such packets are quite indicative of unusual behaviour (such as an attack) and are usually easily identified by IDS/IDP.
+
 
 * UDP Flood - much like the TCP SYN Flood but instead sends UDP packets to the specified host:port. Like the TCP SYN Flood function, hping3 is used but if it is not found, it attempts to use nmap-nping instead.  All options are the same as TCP SYN Flood, except you can specify data to send in the UDP packets.
 Again, this is a good way to check switch/router throughput or to test VOIP systems.
