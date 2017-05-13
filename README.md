@@ -1,4 +1,4 @@
-#pentmenu
+# pentmenu
 
 
 **A bash script inspired by pentbox.**
