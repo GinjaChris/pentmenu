@@ -32,6 +32,8 @@ Tested on Debian and Arch.
 
 * nslookup (or 'host')
 
+* ike-scan
+
 ## How to use?
 
 
@@ -81,6 +83,9 @@ Alternatively, use git clone, or download the latest release from https://github
 * Check Server Uptime - estimates the uptime of the target by querying an open TCP port with hping. Accuracy of the results varies from one machine to another; this does not work against all servers.
 
 
+* IPsec Scan - attempts to identify the presence of an IPsec VPN server with the use of ike-scan and various Phase 1 proposals. Any text output from this module, whether it be regarding "handshake" or "no proposal chosen", indicates the presence of an IPsec VPN server.  See http://nta-monitor.com/wiki/index.php/Ike-scan_User_Guide for an excellent overview of ike-scan and VPN phase 1.
+
+
 **DOS MODULES**
 
 * TCP SYN Flood - sends a flood of TCP SYN packets using hping3.  If hping3 is not found, it attempts to use the nmap-nping utility instead. Hping3 is preferred since it sends packets as fast as possible.  Options are provided to use a source IP of your interface, or specify (spoof) a source IP, or spoof a random source IP for each packet.
@@ -98,6 +103,7 @@ Some systems will spend excessive CPU cycles processing such packets.  If the so
 * TCP RST Flood - offers the same options as the SYN flood, but sets the RST (Reset) TCP flag instead.
 Such an attack could interrupt established connections if the source IP is set to that of an established connection.
 See https://en.wikipedia.org/wiki/TCP_reset_attack for example.
+
 
 * TCP XMAS Flood - similar to the SYN and ACK floods, but sends packets with all TCP flags set (CWR,ECN,URG,ACK,PSH,RST,SYN,FIN).  The packet is considered to be 'lit up like a christmase tree'.  Theoretically at least, such a packet requires more resources for the receiver to process than a standard packet.
 However, such packets are quite indicative of unusual behaviour (such as an attack) and are usually easily identified by IDS/IDP.
@@ -123,6 +129,10 @@ Defences against this attack include (but are not limited to):
 Limiting the number of TCP connections per client; this will prevent a single machine from making the server unavailable, but is not effective if say, 10,000 clients launch the attack simultaneously.  Additionally, such a defensive measure may negatively impact multiple (legitimate) clients operating behind a forward proxy server.
 
 Limiting the time available to send a complete HTTP request; this is effective since the attack relies on slowly sending headers to the server (the server should await all headers from the client before responding).  If the server limits the time for receiving all headers of a request to 10 seconds (for example) it will severely limit the effectiveness of the attack.  It is possible that such a measure will prevent legitimate clients over slow/lossy connections from accessing the site.
+
+
+* IPsec DOS - uses ike-scan to attempt to flood the specified IP with Main mode and Aggressive mode Phase 1 packets from random source IP's.  Use the IPsec Scan module to identify the presence of an IPsec VPN server.
+
 
 * Distraction Scan - this is not really a DOS attack but simply launches multiple TCP SYN scans, using hping, from a spoofed IP of your choosing (such as the IP of your worst enemy). It is designed to be an obvious scan in order to trigger any lDS/IPS the target may have and so hopefully obscure any actual scan or other action that you may be carrying out.
 
