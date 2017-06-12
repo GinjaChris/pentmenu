@@ -93,7 +93,7 @@ Optionally, you can add data to the SYN packet.  All SYN packets have the fragme
 Falling back to nmap-nping means sending X number of packets per second until Y number of packets is sent and only allows the use of interface IP or a specified (spoofed) source IP.  
 A TCP SYN flood is unlikely to break a server, but is a good way to test switch/router/firewall infrastructure and state tables.
 Note that whilst hping will report the outbound interface and IP which might make you think script does not work as expected, the source IP *will* be set as specified; review a packet capture of the traffic if in doubt!
-Since the source port is definable, it is simple to launch a LAND attack for example.  The ability to set the source port also allows, for example, sending SYN packets to one target and forcing the SYN-ACK responses to a second target.
+Since the source is definable, it is simple to launch a LAND attack for example.  The ability to set the source also allows, for example, sending SYN packets to one target and forcing the SYN-ACK responses to a second target.
 
 
 * TCP ACK Flood - offers the same options as the SYN flood, but sets the ACK (Acknowledgement) TCP flag instead.
