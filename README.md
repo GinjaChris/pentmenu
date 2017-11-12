@@ -141,7 +141,7 @@ Limiting the time available to send a complete HTTP request; this is effective s
 * Distraction Scan - this is not really a DOS attack but simply launches multiple TCP SYN scans, using hping, from a spoofed IP of your choosing (such as the IP of your worst enemy). It is designed to be an obvious scan in order to trigger any lDS/IPS the target may have and so hopefully obscure any actual scan or other action that you may be carrying out.
 
 
-* DNS NXDOMAIN Flood - this attack uses the dig utility and is designed to stress test your DNS server by sending a flood of DNS queries for non-existent domains.  When run against a recursive DNS server it tries to tie up the server and fill the cache with negative responses, slowing/preventing legitimate queries.  Works best launched from multiple attacking clients.
+* DNS NXDOMAIN Flood - this attack uses the dig utility and is designed to stress test your DNS server by sending a flood of DNS queries for non-existent domains.  When run against a recursive DNS server it tries to tie up the server and fill the cache with negative responses, slowing/preventing legitimate queries.  Works best launched from multiple attacking clients. Use 'Ctrl c' to stop the attack.
 
 
 **EXTRACTION MODULES**
