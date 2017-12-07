@@ -93,9 +93,10 @@ git clone https://github.com/GinjaChris/pentmenu
 **DOS MODULES**
 
 * ICMP Echo Flood - uses hping3 to launch a traditional ICMP Echo flood against the target.  On a modern system you are unlikely to achieve much, but it is seful to test against firewalls to observe their behaviour.  Use 'Ctrl C' to end the flood.
+The source address of flood packets is configurable. 
 
 
-* ICMP Blacknurse Flood - uses hping to launch an ICMP flood against the target.  ICMP packets are of type "Destination Unreachable, Port Unreachable". This attack can cause high CPU usage on many systems.  Use 'Ctrl C' to end the attack.  See http://blacknurse.dk/ for more information.
+* ICMP Blacknurse Flood - uses hping to launch an ICMP flood against the target.  ICMP packets are of type "Destination Unreachable, Port Unreachable". This attack can cause high CPU usage on many systems.  Use 'Ctrl C' to end the attack.  See http://blacknurse.dk/ for more information. The source address of flood packets is configurable. 
 
 
 * TCP SYN Flood - sends a flood of TCP SYN packets using hping3.  If hping3 is not found, it attempts to use the nmap-nping utility instead. Hping3 is preferred since it sends packets as fast as possible.  Options are provided to use a source IP of your interface, or specify (spoof) a source IP, or spoof a random source IP for each packet.
