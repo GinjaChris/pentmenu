@@ -182,12 +182,3 @@ Bitcoin:
 1E5S4acQmjky84HFzF9oQVy23UbG2LoXiy
 ```
 
-Burstcoin:
-```
-BURST-C8T7-4PQX-85ZH-CJ2W3
-```
-
-Etherium:
-```
-0x902397d9581A7f4B856B71C2Ea8A5e974224b540
-```
