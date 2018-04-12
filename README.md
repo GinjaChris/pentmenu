@@ -89,7 +89,7 @@ git clone https://github.com/GinjaChris/pentmenu
 **DOS MODULES**
 
 * ICMP Echo Flood - uses hping3 to launch a traditional ICMP Echo flood against the target.  On a modern system you are unlikely to achieve much, but it is seful to test against firewalls to observe their behaviour.  Use 'Ctrl C' to end the flood.
-The source address of flood packets is configurable. 
+The source address of flood packets is configurable. Note that the target can be an IP (i.e 127.0.0.1) or a hostname (i.e localhost.localnet.com).  Do NOT include the protocol as part of the target (i.e. http://localhost.localnet.com).
 
 
 * ICMP Blacknurse Flood - uses hping3 to launch an ICMP flood against the target.  ICMP packets are of type "Destination Unreachable, Port Unreachable". This attack can cause high CPU usage on many systems.  Use 'Ctrl C' to end the attack.  See http://blacknurse.dk/ for more information. The source address of flood packets is configurable. 
@@ -171,7 +171,7 @@ Pentmenu is available as a [package](https://archstrike.org/packages/pentmenu) o
 
 ## Donations
 
-Donations are accepted in coin:
+Donations are accepted in cryptocurrency:
 
 Bitcoin:
 ```
