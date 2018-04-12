@@ -1,13 +1,9 @@
 # pentmenu
 
-
-**A bash script inspired by pentbox.**
-
-Designed to be a simple way to implement various network pentesting functions, including network attacks, using wherever possible readily available software commonly installed on most linux distributions without having to resort to multiple specialist tools.
+**A bash select menu for quick and easy network recon and DOS attacks**
 
 
-**Sudo is implemented where necesssary.**
-
+Sudo is implemented where necesssary.
 Tested on Debian and Arch.
 
 ## Requirements:
@@ -75,16 +71,16 @@ git clone https://github.com/GinjaChris/pentmenu
 * Ping Sweep - uses nmap to perform an ICMP echo (ping) against the target host or network.
 
 
-* Quick Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.  Nmap will not perform a ping sweep prior to performing the TCP SYN scan. This module scans the 1,000 most common ports. This module can, of course, be used to scan a single host or a full network. This scan can take a long time to finish, please be patient.
+* Quick Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.  Nmap will not perform a ping sweep prior to performing the TCP SYN scan. This module scans the 1,000 most common ports. This module can, of course, be used to scan a single host or a full network but is really designed to identify targets across a range of IP addresses. This scan can take a long time to finish, please be patient.
 
 
-* Detailed Scan - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of IE11 in this mode, to help avoid detection via HTTP. All TCP ports on the target (hostname/IP/subnet) are scanned. This scan can take a long time to finish, please be patient.
+* Detailed Scan - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version and attempts OS detection.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of IE11 in this mode, to help avoid detection via HTTP. *All* TCP ports on the target (hostname/IP/subnet) are scanned. Whilst module can scan a single host or many hosts, its intended use is to perform an information gathering scan against a single system. This scan can take a long time to finish, please be patient.
 
 
-* UDP scan - uses nmap to scan for open UDP ports. All UDP ports are scanned.
+* UDP scan - uses nmap to scan for open UDP ports. *All* UDP ports are scanned.
 
 
-* Check Server Uptime - estimates the uptime of the target by querying an open TCP port with hping. Accuracy of the results varies from one machine to another; this does not work against all servers.
+* Check Server Uptime - estimates the uptime of the target by querying an open TCP port with hping3. Accuracy of the results varies from one machine to another; this does not work against all servers.
 
 
 * IPsec Scan - attempts to identify the presence of an IPsec VPN server with the use of ike-scan and various Phase 1 proposals. Any text output from this module, whether it be regarding "handshake" or "no proposal chosen", indicates the presence of an IPsec VPN server.  See http://nta-monitor.com/wiki/index.php/Ike-scan_User_Guide for an excellent overview of ike-scan and VPN phase 1.
@@ -96,7 +92,7 @@ git clone https://github.com/GinjaChris/pentmenu
 The source address of flood packets is configurable. 
 
 
-* ICMP Blacknurse Flood - uses hping to launch an ICMP flood against the target.  ICMP packets are of type "Destination Unreachable, Port Unreachable". This attack can cause high CPU usage on many systems.  Use 'Ctrl C' to end the attack.  See http://blacknurse.dk/ for more information. The source address of flood packets is configurable. 
+* ICMP Blacknurse Flood - uses hping3 to launch an ICMP flood against the target.  ICMP packets are of type "Destination Unreachable, Port Unreachable". This attack can cause high CPU usage on many systems.  Use 'Ctrl C' to end the attack.  See http://blacknurse.dk/ for more information. The source address of flood packets is configurable. 
 
 
 * TCP SYN Flood - sends a flood of TCP SYN packets using hping3.  If hping3 is not found, it attempts to use the nmap-nping utility instead. Hping3 is preferred since it sends packets as fast as possible.  Options are provided to use a source IP of your interface, or specify (spoof) a source IP, or spoof a random source IP for each packet.
@@ -104,11 +100,11 @@ Optionally, you can add data to the SYN packet.  All SYN packets have the fragme
 Falling back to nmap-nping means sending X number of packets per second until Y number of packets is sent and only allows the use of interface IP or a specified (spoofed) source IP.  
 A TCP SYN flood is unlikely to break a server, but is a good way to test switch/router/firewall infrastructure and state tables.
 Note that whilst hping will report the outbound interface and IP which might make you think script does not work as expected, the source IP *will* be set as specified; review a packet capture of the traffic if in doubt!
-Since the source is definable, it is simple to launch a LAND attack for example.  The ability to set the source also allows, for example, sending SYN packets to one target and forcing the SYN-ACK responses to a second target.
+Since the source is definable, it is simple to launch a LAND attack for example (see https://en.wikipedia.org/wiki/LAND).  The ability to set the source also allows, for example, sending SYN packets to one target and forcing the SYN-ACK responses to a second target.
 
 
 * TCP ACK Flood - offers the same options as the SYN flood, but sets the ACK (Acknowledgement) TCP flag instead.
-Some systems will spend excessive CPU cycles processing such packets.  If the source IP is set to that of an established connection, it is possible that an estabished connection can be disrupted by this 'blind' TCP ACK Flood.  This attack is considered 'blind' because it does not take into account any details of any established connection (like sequence or acknowledgement numbers).  For more information see https://www.staminus.net/a-ddos-attack-explained-tcp-ack/ for example.
+Some systems will spend excessive CPU cycles processing such packets.  If the source IP is set to that of an established connection, it is possible that an estabished connection can be disrupted by this 'blind' TCP ACK Flood.  This attack is considered 'blind' because it does not take into account any details of any established connection (like sequence or acknowledgement numbers).  
 
 
 * TCP RST Flood - offers the same options as the SYN flood, but sets the RST (Reset) TCP flag instead.
@@ -116,7 +112,7 @@ Such an attack could interrupt established connections if the source IP is set t
 See https://en.wikipedia.org/wiki/TCP_reset_attack for example.
 
 
-* TCP XMAS Flood - similar to the SYN and ACK floods, but sends packets with all TCP flags set (CWR,ECN,URG,ACK,PSH,RST,SYN,FIN).  The packet is considered to be 'lit up like a christmase tree'.  Theoretically at least, such a packet requires more resources for the receiver to process than a standard packet.
+* TCP XMAS Flood - similar to the SYN and ACK floods, with the same options, but sends packets with all TCP flags set (CWR,ECN,URG,ACK,PSH,RST,SYN,FIN).  The packet is considered to be 'lit up like a christmase tree'.  Theoretically at least, such a packet requires more resources for the receiver to process than a standard packet.
 However, such packets are quite indicative of unusual behaviour (such as an attack) and are usually easily identified by IDS/IDP.
 
 
@@ -127,12 +123,12 @@ Again, this is a good way to check switch/router throughput or to test VOIP syst
 * SSL DOS - uses OpenSSL to attempt to DOS a target host:port.  It does this by opening many connections and causing the server to make expensive handshake calculations.  This is not a pretty or elegant piece of code, do not expect it to stop immediately upon pressing 'Ctrl c', but it can be brutally effective.  
 The option for client renegotiation is given;  if the target server supports client initiated renegotiation, this option should be chosen.
 Even if the target server does not support client renegotiation (for example CVE-2011-1473), it is still possible to impact/DOS the server with this attack.  
-It is very useful to run this against loadbalancers/proxies/SSL-enabled servers (not just HTTPS!) to see how they cope under the strain.
+It is very useful to run this against loadbalancers/proxies/SSL-enabled servers (not just HTTPS, but any SSL or TLS encrypted service!) to see how they cope under the strain.
 
 
 * Slowloris - uses netcat to slowly send HTTP Headers to the target host:port with the intention of starving it of resources.  This is effective against many, although not all, HTTP servers, provided the connections can be held open for long enough.  Therefore this attack is only effective if the server does not limit the time available to send a complete HTTP request.
 Some implementations of this attack use clearly identifiable headers which is not the case here.  The number of connections to open to the target is configurable. 
-The interval between sending each header line is configurable, with the default being a random value between 5 and 15 seconds. The idea is to send headers slowly, but not so slow that the servers idle timeout closes the connection.
+The interval between sending each header line is configurable, with the default being a random value between 5 and 15 seconds. The idea is to send headers slowly, but not so slow that the servers idle timeout closes the connection.  For example, if we send one header line every 900 seconds, the likelyhood is that the server will have closed the connection long before we send a second header line.
 The option to use SSL (SSL/TLS) is given, which requires stunnel and allows the attack to be used against a HTTPS server.  You don't use the SSL option against a plain HTTP server.
 
 Defences against this attack include (but are not limited to):
@@ -145,7 +141,7 @@ Limiting the time available to send a complete HTTP request; this is effective s
 * IPsec DOS - uses ike-scan to attempt to flood the specified IP with Main mode and Aggressive mode Phase 1 packets from random source IP's.  Use the IPsec Scan module to identify the presence of an IPsec VPN server.
 
 
-* Distraction Scan - this is not really a DOS attack but simply launches multiple TCP SYN scans, using hping, from a spoofed IP of your choosing (such as the IP of your worst enemy). It is designed to be an obvious scan in order to trigger any lDS/IPS the target may have and so hopefully obscure any actual scan or other action that you may be carrying out.
+* Distraction Scan - this is not really a DOS attack but simply launches multiple TCP SYN scans, using hping3, from a spoofed IP of your choosing (such as the IP of your worst enemy). It is designed to be an obvious scan in order to trigger any lDS/IPS the target may have and so hopefully obscure any actual scan or other action that you may be carrying out.
 
 
 * DNS NXDOMAIN Flood - this attack uses the dig utility and is designed to stress test your DNS server by sending a flood of DNS queries for non-existent domains.  When run against a recursive DNS server it tries to tie up the server and fill the cache with negative responses, slowing/preventing legitimate queries.  Works best launched from multiple attacking clients. Use 'Ctrl c' to stop the attack.
