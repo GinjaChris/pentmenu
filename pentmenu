@@ -1029,7 +1029,7 @@ echo "Enter spoofed source address:"
 #need a spoofed source address
 read -i $SOURCE -e SOURCE
 #use hping to perform multiple obvious TCP SYN scans
-for i in {1..5}; do echo "sending scan $i" && sudo hping3 --scan all --spoof $SOURCE -S $TARGET 2>/dev/null 1>/dev/null; done
+for i in {1..50}; do echo "sending scan $i" && sudo hping3 --scan all --spoof $SOURCE -S $TARGET 2>/dev/null 1>/dev/null; done
 exit 0
 }
 ##END DISTRACTION##
