@@ -74,7 +74,7 @@ git clone https://github.com/GinjaChris/pentmenu
 * Quick Scan - TCP Port scanner using nmap to scan for open ports using TCP SYN scan.  Nmap will not perform a ping sweep prior to performing the TCP SYN scan. This module scans the 1,000 most common ports. This module can, of course, be used to scan a single host or a full network but is really designed to identify targets across a range of IP addresses. This scan can take a long time to finish, please be patient.
 
 
-* Detailed Scan - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of IE11 in this mode, to help avoid detection via HTTP. *All* TCP ports on the target (hostname/IP/subnet) are scanned. Whilst module can scan a single host or many hosts, its intended use is to perform an information gathering scan against a single system. This scan can take a long time to finish, please be patient.
+* Detailed Scan - uses nmap to identify live hosts, open ports, attempts OS identification, grabs banners/identifies running software version.  Nmap will not perform a ping sweep prior as part of this scan.  Nmap's default User-Agent string is changed to that of Microsoft Edge browser in this mode, to help avoid detection via HTTP. *All* TCP ports on the target (hostname/IP/subnet) are scanned. Whilst module can scan a single host or many hosts, its intended use is to perform an information gathering scan against a single system. This scan can take a long time to finish, please be patient.
 
 
 * UDP scan - uses nmap to scan for open UDP ports. *All* UDP ports are scanned.
