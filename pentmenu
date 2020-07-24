@@ -175,7 +175,7 @@ Default is 3:"
 read -i $SPEED -e SPEED
 : ${SPEED:=3}
 #scan using nmap.  Note the change in user-agent from the default nmap value to help avoid detection
-sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko" -Pn -p 1-65535 -sV -sC -A -O -T $SPEED $TARGET --reason
+sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.74 Safari/537.36 Edg/79.0.309.43" -Pn -p 1-65535 -sV -sC -A -O -T $SPEED $TARGET --reason
 }
 ##END DETAILEDSCAN##
 ###################
