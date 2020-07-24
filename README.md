@@ -175,6 +175,6 @@ Donations are accepted in cryptocurrency:
 
 Bitcoin:
 ```
-1E5S4acQmjky84HFzF9oQVy23UbG2LoXiy
+bc1q96r5gr35qeah3q8asme63zhusjrfx6vg9jnaf5
 ```
 
