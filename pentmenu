@@ -83,7 +83,7 @@ showip()
 {		echo "External IP lookup uses curl..."
 		echo "External IP is detected as:"
 #use curl to lookup external IP
-		curl https://canihazip.com/s/
+		curl https://icanhazip.com/s/
 		echo ""
 		echo ""
 #show interface IP's
