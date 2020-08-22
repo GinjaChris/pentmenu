@@ -88,7 +88,7 @@ git clone https://github.com/GinjaChris/pentmenu
 
 **DOS MODULES**
 
-* ICMP Echo Flood - uses hping3 to launch a traditional ICMP Echo flood against the target.  On a modern system you are unlikely to achieve much, but it is seful to test against firewalls to observe their behaviour.  Use 'Ctrl C' to end the flood.
+* ICMP Echo Flood - uses hping3 to launch a traditional ICMP Echo flood against the target.  On a modern system you are unlikely to achieve much, but it is useful to test against firewalls to observe their behaviour.  Use 'Ctrl C' to end the flood.
 The source address of flood packets is configurable. Note that the target can be an IP (i.e 127.0.0.1) or a hostname (i.e localhost.localnet.com).  Do NOT include the protocol as part of the target (i.e. http://localhost.localnet.com).
 
 
