@@ -1,5 +1,6 @@
 # pentmenu
 
+[中文说明](/README.zh-CN.md)
 **A bash select menu for quick and easy network recon and DOS attacks**
 
 
