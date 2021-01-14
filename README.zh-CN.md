@@ -60,7 +60,7 @@ git clone https://github.com/GinjaChris/pentmenu
 
 ## 模块相关细节
 
-**RECON MOSULES**
+**RECON MODULES**
 
 * Show IP - 使用`curl`来获取您的外网IP。使用`ip a`或`ifconfig`（如果适宜）显示您的本地IP。
 
