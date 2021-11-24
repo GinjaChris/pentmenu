@@ -32,6 +32,8 @@ Tested on Debian and Arch.
 
 * ike-scan
 
+* bind-tools (often part of the 'bind' package, needed for "host" and "nslookup")
+
 ## How to use?
 
 
