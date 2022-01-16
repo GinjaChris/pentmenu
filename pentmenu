@@ -1047,9 +1047,9 @@ do
 TLD=(${TLDLIST[RANDOM%21]})
 RANDLONG=$((RANDOM % 20 +1))
 STRING=$(< /dev/urandom tr -dc a-z-0-9 | head -c$RANDLONG)
-echo $RANDOM.$STRING.$TLD
-echo $RANDOM.$TLD
-echo $STRING.$TLD
+dig $RANDOM.$STRING.$TLD
+dig $RANDOM.$TLD
+dig $STRING.$TLD
 done
 exit 0
 }
