@@ -1047,7 +1047,7 @@ TLDLIST=(com br net org $RANDOM au co jp cn ru in ir ua ca xyz site top icu vip 
 do
 TLD=(${TLDLIST[RANDOM%21]})
 RANDLONG=$((RANDOM % 20 +1))
-STRING=$(< /dev/urandom tr -dc a-z-0-9 | head -c$RANDLONG)
+STRING=$(< /dev/urandom tr -dc [:alnum:] | head -c$RANDLONG)
 dig $RANDOM.$STRING.$TLD @$DNSTARGET
 dig $RANDOM.$TLD @$DNSTARGET
 dig $STRING.$TLD @$DNSTARGET
