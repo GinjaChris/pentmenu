@@ -1065,7 +1065,7 @@ then
 TRANSID2=0$TRANSID
 fi
 #now we have transaction ID, generate random alphanumeric name to query
-TLDLIST=(com br net org cz au co jp cn ru in ir ua ca xyz site top icu vip online de %RANDOM foo)
+TLDLIST=(com br net org cz au co jp cn ru in ir ua ca xyz site top icu vip online de $RANDOM foo)
 TLD=(${TLDLIST[RANDOM%22]})
 RANDLONG=$((RANDOM % 20 +1))
 STRING=$(< /dev/urandom tr -dc [:alnum:] | head -c$RANDLONG)
