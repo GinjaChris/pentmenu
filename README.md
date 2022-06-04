@@ -8,6 +8,8 @@
 Sudo is implemented where necessary.
 Tested on Debian and Arch.
 
+**Contributions and pull requests are most welcome!**
+
 ## Requirements:
 
 * bash
