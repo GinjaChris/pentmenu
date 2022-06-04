@@ -5,7 +5,7 @@
 **A bash select menu for quick and easy network recon and DOS attacks**
 
 
-Sudo is implemented where necesssary.
+Sudo is implemented where necessary.
 Tested on Debian and Arch.
 
 ## Requirements:
