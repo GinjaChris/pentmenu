@@ -177,10 +177,6 @@ Pentmenu is available as a [package](https://archstrike.org/packages/pentmenu) o
 
 ## Donations
 
-Donations are accepted in cryptocurrency:
-
-Bitcoin:
-```
-18N7UavMWKKa3sFD37WuMTnn6PdfZA3ips
+None required, just attribute the author correctly please :)
 ```
 
